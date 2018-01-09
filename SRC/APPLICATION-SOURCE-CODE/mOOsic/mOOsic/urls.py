@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.contrib.staticfiles.views import serve as static_serve
+
 
 urlpatterns = [
-    url(r'', include('user_app.urls')),
+    url(r'^api/', include('user_app.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^$', static_serve, kwargs={
+        'path': 'index.html'
+    })
 ]
