@@ -47,7 +47,7 @@ def spotify_track_mood(track_ids):
 
 
 ids = []
-f = open('C:\Users\yotro\Desktop\lyrics_list.json')
+f = open('lyrics_list.json')
 d = json.load(f)
 for i in range(len(d)):
     s = d[i]['track'] + ' ' + d[i]['artist']
