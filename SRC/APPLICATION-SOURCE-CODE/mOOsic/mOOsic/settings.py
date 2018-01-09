@@ -54,7 +54,7 @@ ROOT_URLCONF = 'mOOsic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['user_app/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
