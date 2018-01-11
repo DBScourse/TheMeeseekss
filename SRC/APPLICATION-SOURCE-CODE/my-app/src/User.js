@@ -36,8 +36,12 @@ export default class User extends Component {
     }
     
     componentDidMount() {
+        /*
         var playlists_promise = sleep(3000)
             .then(res => [{name: 'Love', id: 1}, {name: 'Happy', id: 2}, {name: 'Friends', id: 3}]);
+        */
+        var playlists_promise = fetch('/api/get_playlists')
+            .then(res => res.json());
 
         playlists_promise
             .then(res => this.setState({playlists: res}));
@@ -57,7 +61,7 @@ export default class User extends Component {
             .then(res => this.setState({playlistRecommendation: res}));
         
         sleep(3000)
-            .then(res => ({track: {name: 'I love you baby', id: 55, artist: {name: 'Gili', id:24}}, artist: {name: 'Roi Cohen', id: 27}}))
+            .then(res => ({track: {name: 'some song', id: 55, artist: {name: 'Gili', id:24}}, artist: {name: 'Gili', id: 27}}))
             .then(res => this.setState({tops: res}));
             
         sleep(3000)
