@@ -4,12 +4,23 @@ from django.http import JsonResponse
 import db_handler as dbhandler
 import user_log
 
-
+# TODO add a try catch for when the db query fails
 # Create your views here.
-def get_playlists(request):
-    # data = dbhandler.sample_sql_query()
-    response = [{'name': 'try', 'id': 1}, {'name': 'if', 'id': 2}, {'name': 'works', 'id': 3}]
-    return JsonResponse(response, safe=False)
+def generate_playlist(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    if not user_log.user_check(request.GET['username']):
+        stat = 401
+        response['status_message'] = 'User must be logged in'
+        return JsonResponse(response, status=stat)
+    dbhandler.update_user_history(request.GET['username'], request.GET['danceability'], request.GET['energy'], request.GET['tags'])
+    response['data'] = dbhandler.get_playlist(request.GET['danceability'], request.GET['energy'], request.GET['tags'])
+    stat = 200
+    response['status_message'] = 'Playlist generated successfully'
+    return JsonResponse(response, status=stat)
 
 
 def login(request):
@@ -87,4 +98,16 @@ def user_page(request):
     stat = 200
     response['status_message'] = 'Data pulled successfully'
     # Assuming the user is logged in - validated in front end
+    return JsonResponse(response, status=stat)
+
+
+def free_search(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    response['search_result'] = dbhandler.search(request.GET['search_query'])
+    stat = 200
+    response['status_message'] = 'Data pulled successfully'
     return JsonResponse(response, status=stat)

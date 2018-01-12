@@ -30,3 +30,18 @@ def is_user(username):
 def add_user(username, password):
     # TODO
     return None
+
+
+def update_user_history(username, danceability, energy, tags):
+    # TODO
+    return
+
+
+def get_playlist(username, danceability, energy):
+    # TODO
+    return []
+
+
+def search(query):
+    # TODO
+    return None
