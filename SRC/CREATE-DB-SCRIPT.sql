@@ -23,7 +23,7 @@ CREATE TABLE Playlists_tbl
   playlist_id int NOT NULL AUTO_INCREMENT,
   user_id int NOT NULL,
   playlist_name varchar(100) NOT NULL,
-  timestamp TIMESTAMP NOT NULL,
+  playlist_timestamp TIMESTAMP NOT NULL,
   PRIMARY KEY (playlist_id),
   FOREIGN KEY (user_id) REFERENCES Users_tbl(user_id)
 );
