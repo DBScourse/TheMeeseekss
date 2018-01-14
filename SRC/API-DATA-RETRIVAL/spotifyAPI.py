@@ -19,12 +19,12 @@ def spotify_trackid(query):
     except spotipy.client.SpotifyException as err:
         print(err)
         print('Spotify exception occurred. going to sleep and trying again.')
-        time.sleep(30)
+        time.sleep(10)
         return spotify_trackid(query)
     except ConnectionError as err:
         print(err)
         print('Connection Error occurred. going to sleep and trying again.')
-        time.sleep(30)
+        time.sleep(10)
         return spotify_trackid(query)
     except:
         print('An error has occurred. ignoring song')
@@ -41,36 +41,36 @@ def spotify_track_mood(query):
     except spotipy.client.SpotifyException as err:
         print(err)
         print('Spotify exception occurred. going to sleep and trying again.')
-        time.sleep(30)
+        time.sleep(10)
         return spotify_track_mood(query)
     except ConnectionError as err:
         print(err)
         print('Connection Error occurred. going to sleep and trying again.')
-        time.sleep(30)
+        time.sleep(10)
         return spotify_track_mood(query)
     except ValueError as err:
         print(err)
         print('Value Error occurred. going to sleep and trying again.')
-        time.sleep(30)
+        time.sleep(10)
         return spotify_track_mood(query)
 
 
-track_dict = {}
-source = open('lyrics_list.json')
-target = open('spotifyData.json', 'w')
-data = json.load(source)
-for i in range(len(data)):
-    q = str(data[i]['track'] + ' ' + data[i]['artist'])
-    track_id = spotify_trackid(q)
-    if track_id is not None and track_id not in track_dict:
-        res = spotify_track_mood(str(track_id))
-        if res is not None:
-            data[i]['danceability'] = res[0]['danceability']
-            data[i]['energy'] = res[0]['energy']
-            data[i]['id'] = track_id
-            track_dict[track_id] = data[i]
-            print('#################' + q + '#################')
-            target.truncate()
-            target.write(json.dumps(track_dict))
-
-
+with open('lyrics_list.json') as source:
+    target = open('spotifyData.json', 'a')
+    target.write('[')
+    data = json.load(source)
+    track_dict = {}
+    for i in range(len(data)):
+        q = str(data[i]['track'] + ' ' + data[i]['artist'])
+        track_id = spotify_trackid(q)
+        if track_id is not None and track_id not in track_dict:
+            res = spotify_track_mood(str(track_id))
+            if res is not None:
+                data[i]['danceability'] = res[0]['danceability']
+                data[i]['energy'] = res[0]['energy']
+                data[i]['id'] = track_id
+                track_dict[track_id] = data[i]
+                print('#################' + q + '#################')
+                target.write(json.dumps(data[i]))
+                target.write(',\n')
+    target.write(']')

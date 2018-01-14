@@ -4,6 +4,7 @@ from django.http import JsonResponse
 import db_handler as dbhandler
 import user_log
 
+
 # TODO add a try catch for when the db query fails
 # Create your views here.
 def generate_playlist(request):
@@ -16,7 +17,8 @@ def generate_playlist(request):
         stat = 401
         response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
-    dbhandler.update_user_history(request.GET['username'], request.GET['danceability'], request.GET['energy'], request.GET['tags'])
+    dbhandler.update_user_history(request.GET['username'], request.GET['danceability'], request.GET['energy'],
+                                  request.GET['tags'])
     response['data'] = dbhandler.get_playlist(request.GET['danceability'], request.GET['energy'], request.GET['tags'])
     stat = 200
     response['status_message'] = 'Playlist generated successfully'
@@ -110,4 +112,28 @@ def free_search(request):
     response['search_result'] = dbhandler.search(request.GET['search_query'])
     stat = 200
     response['status_message'] = 'Data pulled successfully'
+    return JsonResponse(response, status=stat)
+
+
+def get_user_playlists(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    response['user_data'] = dbhandler.get_user_data(request.GET['username'])
+    stat = 200
+    response['status_message'] = 'Data pulled successfully'
+    return JsonResponse(response, status=stat)
+
+
+def add_song_to_playlist(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    dbhandler.update_playlist(request.GET['username'], request.GET['song_id'], request.GET['playlist_id'])
+    stat = 200
+    response['status_message'] = 'Playlist updated successfully'
     return JsonResponse(response, status=stat)

@@ -45,3 +45,8 @@ def get_playlist(username, danceability, energy):
 def search(query):
     # TODO
     return None
+
+
+def update_playlist(username, song_id, playlist_id):
+    # TODO
+    return None
