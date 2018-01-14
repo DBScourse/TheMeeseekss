@@ -1,6 +1,9 @@
 from queries import *
 from django.db import connection
 import uuid
+import django.core.exceptions
+import django.db
+import mysql.connector
 
 
 def sample_sql_query():
@@ -28,5 +31,25 @@ def is_user(username):
 
 
 def add_user(username, password):
+    # TODO
+    return None
+
+
+def update_user_history(username, danceability, energy, tags):
+    # TODO
+    return
+
+
+def get_playlist(username, danceability, energy):
+    # TODO
+    return []
+
+
+def search(query):
+    # TODO
+    return None
+
+
+def update_playlist(username, song_id, playlist_id):
     # TODO
     return None
