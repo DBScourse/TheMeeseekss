@@ -32,11 +32,10 @@ CREATE TABLE Playlists_tbl
 CREATE TABLE Moods_tbl
 (
   mood_id int NOT NULL AUTO_INCREMENT,
-  danceability int NOT NULL,
-  energy int NOT NULL,
-  genre varchar(100) NOT NULL,
+  danceability FLOAT NOT NULL,
+  energy FLOAT NOT NULL,
   PRIMARY KEY (mood_id),
-  UNIQUE (danceability, energy, genre)
+  UNIQUE (danceability, energy)
 );
 
 -- create tags table
