@@ -1,6 +1,9 @@
 from queries import *
 from django.db import connection
 import uuid
+import django.core.exceptions
+import django.db
+import mysql.connector
 
 
 def sample_sql_query():
