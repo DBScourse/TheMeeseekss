@@ -192,3 +192,98 @@ def add_song_to_playlist(request):
         stat = 503
         response['status_message'] = 'An error has occurred while performing the task'
     return JsonResponse(response, status=stat)
+
+
+def get_user_playlist_by_id(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    try:
+        response['playlist'] = dbhandler.get_playlist_by_id(request.GET['username'], request.GET['playlist_id'])
+        stat = 200
+        response['status_message'] = 'Playlist updated successfully'
+    except django.core.exceptions.EmptyResultSet:
+        stat = 404
+        response['status_message'] = 'Empty result set'
+    except django.db.Error:
+        stat = 503
+        response['status_message'] = 'An error has occurred while performing the task'
+    return JsonResponse(response, status=stat)
+
+
+def get_lyrics_by_track_id(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    try:
+        response['lyrics'] = dbhandler.get_lyrics_by_track_id(request.GET['track_id'])
+        stat = 200
+        response['status_message'] = 'Playlist updated successfully'
+    except django.core.exceptions.EmptyResultSet:
+        stat = 404
+        response['status_message'] = 'Empty result set'
+    except django.db.Error:
+        stat = 503
+        response['status_message'] = 'An error has occurred while performing the task'
+    return JsonResponse(response, status=stat)
+
+
+def get_recommendation_from_last_playlist(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    try:
+        response['recommendation'] = dbhandler.get_recommendation_by_playlist(request.GET['playlist_id'])
+        stat = 200
+        response['status_message'] = 'Playlist updated successfully'
+    except django.core.exceptions.EmptyResultSet:
+        stat = 404
+        response['status_message'] = 'Empty result set'
+    except django.db.Error:
+        stat = 503
+        response['status_message'] = 'An error has occurred while performing the task'
+    return JsonResponse(response, status=stat)
+
+
+def get_top_artist_and_track(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    try:
+        response['tops'] = dbhandler.get_top_artist_top_track(request.GET['artist_id'], request.GET['track_id']) #TODO make sure this is the needed data
+        stat = 200
+        response['status_message'] = 'Playlist updated successfully'
+    except django.core.exceptions.EmptyResultSet:
+        stat = 404
+        response['status_message'] = 'Empty result set'
+    except django.db.Error:
+        stat = 503
+        response['status_message'] = 'An error has occurred while performing the task'
+    return JsonResponse(response, status=stat)
+
+
+def get_recommendation_from_other_users(request):
+    response = {}
+    if request.method != 'GET':
+        stat = 400
+        response['status_message'] = 'Illegal request. Please try again'
+        return JsonResponse(response, status=stat)
+    try:
+        response['recommendation'] = dbhandler.get_recommendation_by_other_user(request.GET['playlist_id']) # TODO make sure this is the needed data
+        stat = 200
+        response['status_message'] = 'Playlist updated successfully'
+    except django.core.exceptions.EmptyResultSet:
+        stat = 404
+        response['status_message'] = 'Empty result set'
+    except django.db.Error:
+        stat = 503
+        response['status_message'] = 'An error has occurred while performing the task'
+    return JsonResponse(response, status=stat)

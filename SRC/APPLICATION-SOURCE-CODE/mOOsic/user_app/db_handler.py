@@ -54,3 +54,28 @@ def search(query):
 def update_playlist(username, song_id, playlist_id):
     # TODO
     return None
+
+
+def get_playlist_by_id(username, playlist_id):
+    # TODO
+    return None
+
+
+def get_lyrics_by_track_id(track_id):
+    # TODO
+    return None
+
+
+def get_recommendation_by_playlist(playlist_id):
+    # TODO
+    return None
+
+
+def get_top_artist_top_track(artist_id, track_id):
+    # TODO
+    return None
+
+
+def get_recommendation_by_other_user(playlist_id):
+    # TODO
+    return None
