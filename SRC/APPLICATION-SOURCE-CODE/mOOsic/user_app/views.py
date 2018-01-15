@@ -19,8 +19,9 @@ def generate_playlist(request):
         response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
     try:
+        # TODO check dbhandler arguments
         dbhandler.update_user_history(request.GET['username'], request.GET['danceability'], request.GET['energy'],
-                                      request.GET['tags'])
+                                      request.GET['tags'], request.GET['playlist_name'])
         response['data'] = dbhandler.get_playlist(request.GET['danceability'], request.GET['energy'], request.GET['tags'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
@@ -48,7 +49,6 @@ def login(request):
             user_log.user_login(request.POST['username'])
             stat = 200
             response['status_message'] = 'Logged in successfully'
-            response['user_data'] = dbhandler.get_user_data(request.POST['username'])
         else:
             response['is_valid'] = False
             stat = 401

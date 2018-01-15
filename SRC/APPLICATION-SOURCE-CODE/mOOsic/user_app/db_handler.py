@@ -21,7 +21,8 @@ def get_password(username):
 
 
 def get_user_data(username):
-    # TODO
+    # TODO playlist form: [{name: 'Love', id: 1}, {name: 'Happy', id: 2}, {name: 'Friends', id: 3}]
+    # TODO ordered by descending time stamp
     return {}
 
 
@@ -35,7 +36,7 @@ def add_user(username, password):
     return None
 
 
-def update_user_history(username, danceability, energy, tags):
+def update_user_history(username, danceability, energy, tags, playlist_name):
     # TODO
     return
 
