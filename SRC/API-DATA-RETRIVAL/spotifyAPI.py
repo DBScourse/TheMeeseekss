@@ -53,6 +53,10 @@ def spotify_track_mood(query):
         print('Value Error occurred. going to sleep and trying again.')
         time.sleep(10)
         return spotify_track_mood(query)
+    except:
+        print('An error has occurred. ignoring song')
+        time.sleep(10)
+        return spotify_track_mood(query)
 
 
 with open('lyrics_list.json') as source:
@@ -61,7 +65,11 @@ with open('lyrics_list.json') as source:
     data = json.load(source)
     track_dict = {}
     for i in range(len(data)):
-        q = str(data[i]['track'] + ' ' + data[i]['artist'])
+        q = data[i]['track'] + ' ' + data[i]['artist']
+        try:
+            q = str(q)
+        except UnicodeEncodeError:
+            print('contains special chars. trying without conversion')
         track_id = spotify_trackid(q)
         if track_id is not None and track_id not in track_dict:
             res = spotify_track_mood(str(track_id))
