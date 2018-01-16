@@ -73,11 +73,11 @@ def get_recommendation_by_playlist(playlist_id):
     return None
 
 
-def get_top_artist_top_track(artist_id, track_id):
+def get_top_artist_top_track():
     # TODO
     return None
 
 
-def get_recommendation_by_other_user(playlist_id):
+def get_recommendation_by_other_user(username):
     # TODO
     return None

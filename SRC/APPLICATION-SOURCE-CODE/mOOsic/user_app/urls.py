@@ -3,7 +3,6 @@ from django.conf.urls import url
 from . import views
 
 # TODO check regex
-# TODO create new views
 urlpatterns = [
     url(r'^get_playlists', views.get_user_playlists),
     url(r'^get_playlist', views.get_user_playlist_by_id),
