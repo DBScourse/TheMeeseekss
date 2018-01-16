@@ -16,6 +16,7 @@ def sample_sql_query():
 
 def get_password(username):
     # TODO
+	#SELECT password_hash FROM Users_tbl WHERE user_name = {username};
     password = 'sheker'
     return password
 
@@ -33,6 +34,7 @@ def is_user(username):
 
 def add_user(username, password):
     # TODO
+	# INSERT INTO Users_tbl(user_name, password_hash) VALUES ({username}, {password_hash})
     return None
 
 
