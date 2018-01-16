@@ -62,7 +62,7 @@ CREATE TABLE Tracks_tbl
   track_name varchar(100) NOT NULL,
   album_name varchar(100),
   release_year YEAR,
-  lyrics_url varchar (256),
+  lyrics TEXT,
   artist_id int NOT NULL,
   mood_id int,
   PRIMARY KEY (track_id),
