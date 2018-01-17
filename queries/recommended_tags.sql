@@ -1,35 +1,34 @@
-SELECT tag_name 
-FROM Tags_tbl
-WHERE tag_id IN
+SELECT tag_name
+FROM TracksToTags_tbl AS ttt
+JOIN PlaylistToTracks_tbl AS ptt
+ON ttt.track_id = ptt.track_id
+JOIN
 (
-	SELECT tag_id, COUNT(tag_id) AS c
-	FROM TracksToTags_tbl
-	WHERE track_id IN
+	SELECT playlist_id
+	FROM Playlists_tbl
+	JOIN Users_tbl
+	ON Playlists_tbl.user_id = Users_tbl.user_id
+	WHERE user_name = 'aa'
+) AS ptu
+ON ptt.playlist_id = ptu.playlist_id
+JOIN Tags_tbl AS tt
+ON tt.tag_id = ttt.tag_id
+GROUP BY ttt.tag_id
+HAVING COUNT(ttt.tag_id) >= ALL
+(
+	SELECT COUNT(tag_id)
+	FROM TracksToTags_tbl AS ttt
+	JOIN PlaylistToTracks_tbl AS ptt
+	ON ttt.track_id = ptt.track_id
+	JOIN
 	(
-		SELECT DISTINCT track_id
-		FROM PlaylistToTracks_tbl
-		WHERE playlist_id IN
-		(
-			SELECT playlist_id
-			FROM Playlists_tbl
-			WHERE user_id = 0000000
-		)
-	) 
-	AND c >= ALL
-	(
-		SELECT COUNT(tag_id)
-		FROM TracksToTags_tbl
-		WHERE track_id IN
-		(
-			SELECT DISTINCT track_id
-			FROM PlaylistToTracks_tbl
-			WHERE playlist_id IN
-			(
-				SELECT playlist_id
-				FROM Playlists_tbl
-				WHERE user_id = 0000000
-			)
-		)
-	)
-	GROUP BY tag_id
+		SELECT playlist_id
+		FROM Playlists_tbl
+		JOIN Users_tbl
+		ON Playlists_tbl.user_id = Users_tbl.user_id
+		WHERE user_name = {username}
+	) AS ptu
+	ON ptt.playlist_id = ptu.playlist_id
+    GROUP BY tag_id
 )
+LIMIT 5
