@@ -9,12 +9,12 @@ export default class Recomendations extends Component {
     return (
         <div>            
             <div>Recommended song: {this.props.playlistRec}
-            <Button bsStyle="primary">Add this song to your last playlist</Button>
+            <Button bsStyle="primary" onClick={() => this.props.addToPlaylist(this.props.playlistRec)}>Add this song to your last playlist</Button>
             </div>
 
             <div>
                 Other people also like: {this.props.usersRec}
-                <Button bsStyle="primary">Add this song to your last playlist</Button>
+                <Button bsStyle="primary" onClick={() => this.props.addToPlaylist(this.props.playlistRec)}>Add this song to your last playlist</Button>
             </div>
         </div>
     );

@@ -1,17 +1,19 @@
 import React, { Component } from "react";
+import { ListGroup, ListGroupItem } from "react-bootstrap";
 import "./Playlist.css";
 
 export default class Playlist extends Component {
   
   
   render() {
+    console.log(this.props);
     return (
         <div>
             playlist: {this.props.name}
-            <ul>{
-                this.props.tracks.map((track) => <li>{"track: " + (track.name) + " artist: " + (track.artist.name)}</li>)
-            }
-            </ul>
+            <ListGroup>{
+                this.props.tracks.map((track) =>
+                        <ListGroupItem onClick={() => this.props.changeLyrics(track)}>{"track: " + (track.name) + " artist: " + (track.artist.name)}</ListGroupItem>)
+            }</ListGroup>
         </div>
     );
   }    
