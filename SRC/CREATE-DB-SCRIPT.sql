@@ -61,13 +61,13 @@ CREATE TABLE Tracks_tbl
   track_id int NOT NULL AUTO_INCREMENT,
   track_name varchar(100) NOT NULL,
   album_name varchar(100),
-  release_year YEAR,
   lyrics TEXT,
   artist_id int NOT NULL,
   mood_id int,
   PRIMARY KEY (track_id),
   FOREIGN KEY (artist_id) REFERENCES Artists_tbl(artist_id),
   FOREIGN KEY (mood_id) REFERENCES Moods_tbl(mood_id)
+  UNIQUE (track_name, album_name, artist_id)
 );
 
 -- create PlaylistToTracks table
