@@ -1,6 +1,8 @@
-SELECT artist_id, COUNT(artist_id) AS count
-FROM Tracks_tbl 
-WHERE track_id IN
+SELECT artist_name
+FROM Artists_tbl AS art
+JOIN Tracks_tbl AS tt
+ON art.artist_id = tt.artist_id
+JOIN
 (
 	SELECT track_id
 	FROM TracksToTags_tbl 
@@ -10,19 +12,17 @@ WHERE track_id IN
 		FROM Tags_tbl
 		WHERE tag_name = {tag_name}
 	)
-)
-AND mood_id = 
-(
-	SELECT mood_id
-    FROM Moods_tbl
-    WHERE danceability = {danceability} AND energy = {energy}
-)
-GROUP BY artist_id 
-WHERE count >= ALL
+) AS ttn
+ON tt.track_id = ttn.track_id
+JOIN Moods_tbl mt
+ON tt.mood_id = mt.mood_id
+WHERE abs(danceability - {danceability)) < 0.0001 AND abs(energy - {energy}) < 0.0001
+GROUP BY art.artist_id
+HAVING COUNT(art.artist_id) >= ALL
 (
 	SELECT COUNT(artist_id)
-	FROM Tracks_tbl 
-	WHERE track_id IN
+	FROM Tracks_tbl AS tt
+	JOIN
 	(
 		SELECT track_id
 		FROM TracksToTags_tbl 
@@ -32,12 +32,10 @@ WHERE count >= ALL
 			FROM Tags_tbl
 			WHERE tag_name = {tag_name}
 		)
-	)
-	AND mood_id = 
-	(
-		SELECT mood_id
-		FROM Moods_tbl
-		WHERE danceability = {danceability} AND energy = {energy}
-	)
+	) AS ttn
+	ON tt.track_id = ttn.track_id
+	JOIN Moods_tbl mt
+	ON tt.mood_id = mt.mood_id
+	WHERE abs(danceability - {danceability)) < 0.0001 AND abs(energy - {energy}) < 0.0001
 	GROUP BY artist_id
 )
