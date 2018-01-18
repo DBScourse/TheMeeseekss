@@ -89,3 +89,19 @@ CREATE TABLE TracksToTags_tbl
   FOREIGN KEY (tag_id) REFERENCES Tags_tbl(tag_id)
   UNIQUE (tag_id, track_id)
 );
+
+-- create Artists table that enables full text search
+CREATE TABLE ArtistsAsText_tbl
+(
+  artist_id INT NOT NULL,
+  artist_name VARCHAR(100) NOT NULL,
+  FULLTEXT (artist_name),
+  UNIQUE (artist_id)
+) ENGINE=MyISAM;
+
+-- every artist that is inserted into Artist_tbl will also be inserted to the ArtistsAsText_tbl
+DELIMITER //
+CREATE TRIGGER insert_to_artist_txt AFTER INSERT ON Artists_tbl
+  FOR EACH ROW
+    INSERT INTO ArtistsAsText_tbl(artist_id, artist_name) VALUES (NEW.artist_id, NEW.artist_name)//
+DELIMITER ;
