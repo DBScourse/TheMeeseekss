@@ -67,19 +67,19 @@ def add_user(username, password):
 def update_user_history(username, danceability, energy, tag, playlist_name):
     try:
         cnx, cursor = open_db_connection()
-        file_create_new_playlist = open('static/queries/create_new_playlist.sql', 'r')
+        file_create_new_playlist = open('queries/create_new_playlist.sql', 'r')
         q = file_create_new_playlist.read()
         file_create_new_playlist.close()
         cursor.execute(q, (playlist_name, username))
         file_create_new_playlist.close()
 
         if tag is not None:
-            file_recommended_tracks_mood_and_tag = open('static/queries/recommended_tracks_mood_and_tag.sql', 'r')
+            file_recommended_tracks_mood_and_tag = open('queries/recommended_tracks_mood_and_tag.sql', 'r')
             q = file_recommended_tracks_mood_and_tag.read()
             file_recommended_tracks_mood_and_tag.close()
             cursor.execute(q, (tag, danceability, energy))
         else:
-            file_recommended_tracks_mood = open('static/queries/recommended_tracks_mood.sql', 'r')
+            file_recommended_tracks_mood = open('queries/recommended_tracks_mood.sql', 'r')
             q = file_recommended_tracks_mood.read()
             file_recommended_tracks_mood.close()
             cursor.execute(q, (danceability, energy))
@@ -89,7 +89,7 @@ def update_user_history(username, danceability, energy, tag, playlist_name):
         if not results:
             close_db_connection(cnx, cursor)
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        file_insert_tracks_to_playlist = open('static/queries/insert_tracks_to_playlist.sql', 'r')
+        file_insert_tracks_to_playlist = open('queries/insert_tracks_to_playlist.sql', 'r')
         q = file_insert_tracks_to_playlist.read()
         file_insert_tracks_to_playlist.close()
         # TODO ask adi about loop insert tacks to playlist
@@ -150,12 +150,12 @@ def get_recommendation_by_playlist(playlist_id):
 def get_top_artist_top_track():
     try:
         cnx, cursor = open_db_connection()
-        file_top_track = open('static/queries/top_track.sql', 'r')
+        file_top_track = open('queries/top_track.sql', 'r')
         q = file_top_track.read()
         file_top_track.close()
         cursor.execute(q)
         results = ((track_id, track_name, album_name, artist_name) for track_id, track_name, album_name, artist_name in cursor)
-        file_top_artist = open('static/queries/top_artist.sql', 'r')
+        file_top_artist = open('queries/top_artist.sql', 'r')
         q = file_top_artist.read()
         file_top_artist.close()
         cursor.execute(q)
