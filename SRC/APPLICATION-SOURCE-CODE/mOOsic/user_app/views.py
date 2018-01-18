@@ -19,10 +19,9 @@ def generate_playlist(request):
         response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
     try:
-        # TODO check dbhandler arguments
-        dbhandler.update_user_history(request.body['username'], request.body['danceability'], request.body['energy'],
+        response['data'] = dbhandler.update_user_history(request.body['username'], request.body['danceability'], request.body['energy'],
                                       request.body['tags'], request.body['playlist_name'])
-        response['data'] = dbhandler.get_playlist(request.body['danceability'], request.body['energy'], request.body['tags'])
+        # response['data'] = dbhandler.get_playlist(request.body['danceability'], request.body['energy'], request.body['tags'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -270,14 +269,14 @@ def get_top_artist_and_track(request):
     return JsonResponse(response, status=stat)
 
 
-def get_recommendation_from_other_users(request):
+def get_user_recommendations(request):
     response = {}
     if request.method != 'GET':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['recommendation'] = dbhandler.get_recommendation_by_other_user(request.body['username'])
+        response['recommendation'] = dbhandler.get_user_recommendations(request.body['username']) # TODO
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
