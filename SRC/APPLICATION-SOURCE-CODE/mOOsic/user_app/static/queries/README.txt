@@ -1,6 +1,6 @@
-To search and add to playist use:
+To search and add to playlist, use:
 1. create_new_playlist.sql - takes username and playlist name, returns nothing.
-2. recommended_tracks_mood_and_tag.sql OR recommended_tracks_mood.sql - takes danceability, energy and tag (if using hte first one) and returns a list of up to 20 tracks, including: track_id, track_name, album_name, artist_name
+2. recommended_tracks_mood_and_tag.sql OR recommended_tracks_mood.sql - takes danceability, energy and tag (if using the first one) and returns a list of up to 20 tracks, including: track_id, track_name, album_name, artist_name
 3. insert_tracks_to_playlist.sql - adds tracks to last playlist by track_id. Note that you need to repeat the last row for each track_id.
 NOTE: all of the above must happen in the same connection, because of one of the functions used!
 
