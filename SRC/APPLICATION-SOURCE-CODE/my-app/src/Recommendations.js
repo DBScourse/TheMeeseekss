@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Panel } from "react-bootstrap";
 import "./Recommendations.css";
 
 export default class Recomendations extends Component {
@@ -7,16 +7,12 @@ export default class Recomendations extends Component {
   
   render() {
     return (
-        <div>            
-            <div>Recommended song: {this.props.playlistRec}
-            <Button bsStyle="primary" onClick={() => this.props.addToPlaylist(this.props.playlistRec)}>Add this song to your last playlist</Button>
-            </div>
-
-            <div>
-                Other people also like: {this.props.usersRec}
-                <Button bsStyle="primary" onClick={() => this.props.addToPlaylist(this.props.playlistRec)}>Add this song to your last playlist</Button>
-            </div>
+        <div>
+            you may also like songs with thos tags: {this.props.tagsRec}
+            <br/>
+            <br/>
+            you may also like songs of: {this.props.playlistRec}
         </div>
-    );
+       );
   }    
 }

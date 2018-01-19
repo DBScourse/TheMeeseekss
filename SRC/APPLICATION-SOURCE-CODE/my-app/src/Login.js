@@ -24,6 +24,7 @@ export default class Login extends Component {
 
     handleSubmit(event) {
         event.preventDefault()
+        fetch('api/login/')
         this.props.onLoggedIn({username: this.state.username});
     }
 
@@ -36,12 +37,10 @@ export default class Login extends Component {
     }
     
     handleRegistration(user){
-        console.log(this.state);
         this.props.onLoggedIn({username: user.username});
     }
     
     render() {
-        console.log(this.state);
         return (
             <div>
                 <div>
