@@ -92,19 +92,16 @@ def update_user_history(username, danceability, energy, tag, playlist_name):
         file_insert_tracks_to_playlist = open('static/queries/insert_tracks_to_playlist.sql', 'r')
         q = file_insert_tracks_to_playlist.read()
         file_insert_tracks_to_playlist.close()
-        # TODO ask adi about loop insert tacks to playlist
+        args = ()
+        for i in range(len(results)-1):
+            q = q + ', (last_insert_id(), %s)'
+            args = args + (results[i][0])
+        cursor.execute(q, args)
         close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
 
-
-def get_playlist(username, danceability, energy):
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return []
 
 
 def search(query):
@@ -123,14 +120,6 @@ def update_playlist(username, song_id, playlist_id):
     return None
 
 
-def get_playlist_by_id(username, playlist_id):
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return None
-
-
 def get_lyrics_by_track_id(track_id):
     cnx, cursor = open_db_connection()
     # TODO
@@ -138,13 +127,6 @@ def get_lyrics_by_track_id(track_id):
     close_db_connection(cnx, cursor)
     return None
 
-
-def get_recommendation_by_playlist(playlist_id):
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return None
 
 
 def get_top_artist_top_track():
@@ -172,3 +154,25 @@ def get_user_recommendations(username):
 
     close_db_connection(cnx, cursor)
     return None
+
+
+# def get_playlist(username, danceability, energy):
+#     cnx, cursor = open_db_connection()
+#
+#     close_db_connection(cnx, cursor)
+#     return []
+
+
+# def get_recommendation_by_playlist(playlist_id):
+#     cnx, cursor = open_db_connection()
+#
+#     close_db_connection(cnx, cursor)
+#     return None
+
+
+# def get_playlist_by_id(username, playlist_id):
+#     cnx, cursor = open_db_connection()
+#
+#     close_db_connection(cnx, cursor)
+#     return None
+
