@@ -30,21 +30,33 @@ def close_db_connection(cnx, cursor):
 
 
 def get_password(username):
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return
+    try:
+        cnx, cursor = open_db_connection()
+        q = (
+        "SELECT password_hash FROM Users_tbl WHERE user_name = %s")
+        cursor.execute(q, (username,))
+        results = [password_hash for password_hash in cursor]
+        close_db_connection(cnx, cursor)
+        if not results:
+            raise django.core.exceptions.EmptyResultSet('Empty result set')
+        return {'password': results[0]}
+    except mysql.connector.Error as err:
+        raise django.db.Error('DB error occurred: {}'.format(err))
 
 
 def get_user_data(username):
-    # TODO playlist form: [{name: 'Love', id: 1}, {name: 'Happy', id: 2}, {name: 'Friends', id: 3}]
-    # TODO ordered by descending time stamp
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return {}
+    try:
+        cnx, cursor = open_db_connection()
+        q = (
+        "SELECT playlist_name, playlist_id FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s ORDER BY playlist_timestamp")
+        cursor.execute(q, (username,))
+        results = [{'name': playlist_name, 'id': playlist_id} for playlist_name, playlist_id in cursor]
+        close_db_connection(cnx, cursor)
+        if not results:
+            raise django.core.exceptions.EmptyResultSet('Empty result set')
+        return results
+    except mysql.connector.Error as err:
+        raise django.db.Error('DB error occurred: {}'.format(err))
 
 
 def get_tracks_by_playlist_name(username, playlist_name):
@@ -63,11 +75,18 @@ def get_tracks_by_playlist_name(username, playlist_name):
 
 
 def is_user(username):
-    cnx, cursor = open_db_connection()
-    # TODO
-
-    close_db_connection(cnx, cursor)
-    return False
+    try:
+        cnx, cursor = open_db_connection()
+        q = (
+        "SELECT user_id FROM Users_tbl WHERE user_name = %s")
+        cursor.execute(q, (username,))
+        results = [user_id for user_id in cursor]
+        close_db_connection(cnx, cursor)
+        if not results:
+            return False
+        return True
+    except mysql.connector.Error as err:
+        raise django.db.Error('DB error occurred: {}'.format(err))
 
 
 def add_user(username, password):
@@ -151,7 +170,7 @@ def get_lyrics_by_track_id(track_id):
         close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return results[0]
+        return {track_id: results[0]}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
 
@@ -162,12 +181,12 @@ def get_top_artist_top_track():
         q = (
             "SELECT Tracks_tbl.track_id, track_name, album_name, artist_name FROM Tracks_tbl JOIN Artists_tbl ON Tracks_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY track_id HAVING COUNT(PlaylistToTracks_tbl.track_id) >= ALL (SELECT COUNT(PlaylistToTracks_tbl.track_id) FROM PlaylistToTracks_tbl GROUP BY track_id) LIMIT 1")
         cursor.execute(q)
-        track = ((track_id, track_name, album_name, artist_name) for track_id, track_name, album_name, artist_name in
-                 cursor)
+        track = [[track_id, track_name, album_name, artist_name] for track_id, track_name, album_name, artist_name in
+                 cursor]
         q = (
             "SELECT artist_name FROM Artists_tbl JOIN Tracks_tbl ON Artists_tbl.track_id = Tracks_tbl.track_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY artist_id HAVING COUNT(artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY artist_id) LIMIT 1")
         cursor.execute(q)
-        artist = (artist_name for artist_name in cursor)
+        artist = [artist_name for artist_name in cursor]
         results = {'top_track': track[0], 'top_artist': artist[0]}
         close_db_connection(cnx, cursor)
         return results
@@ -190,7 +209,7 @@ def get_artist_recommendation(danceability, energy, tag=None):
         close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return {results[0]}
+        return {'artist_name': results[0]}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
 
