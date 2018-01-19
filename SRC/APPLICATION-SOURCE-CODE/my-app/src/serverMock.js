@@ -211,8 +211,18 @@ export default class Server {
     }
     
     login(name, password) {
+        if (password == '123') {
+            return sleep()
+        } else {
+            return sleep().then(() => Promise.reject(new Error('Wrong username/passowrd')))
+        }
     }
     
     register(name, password) {
+        if (name == 'gili') {
+            return sleep().then(() => Promise.reject(new Error('this username is taken, choose different username')))
+        } else {
+            return sleep()
+        }
     }
 }

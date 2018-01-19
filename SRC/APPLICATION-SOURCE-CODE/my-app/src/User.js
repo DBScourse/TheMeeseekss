@@ -12,7 +12,7 @@ import ServerMock from "./serverMock.js";
 
 import "./User.css";
 
-var userMock = true;
+var useMock = true;
 
 
 
@@ -20,7 +20,7 @@ export default class User extends Component {
     constructor(props) {
         super(props);
         
-        if (userMock) {
+        if (useMock) {
             this.server = new ServerMock(this.props.user);
         } else {
             this.server = new Server(this.props.user);
