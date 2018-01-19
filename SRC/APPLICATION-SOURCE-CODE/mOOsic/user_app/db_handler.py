@@ -193,8 +193,8 @@ def get_top_artist_top_track():
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
 
-
-def get_artist_recommendation(danceability, energy, tag=None):
+###########################TODO#################################
+def get_artist_recommendation_from_last_playlist(username):
     try:
         cnx, cursor = open_db_connection()
         if tag is not None:

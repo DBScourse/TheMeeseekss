@@ -230,15 +230,15 @@ def get_lyrics_by_track_id(request):
         response['status_message'] = 'An error has occurred while performing the task'
     return JsonResponse(response, status=stat)
 
-################################ TODO #####################################
-def get_recommendation_from_last_playlist(request):
+
+def get_artist_recommendation_from_last_playlist(request):
     response = {}
     if request.method != 'GET':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['recommendation'] = dbhandler.get_recommendation_by_playlist(request.GET['username'])
+        response['recommendation'] = dbhandler.get_artist_recommendation_from_last_playlist(request.GET['username'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -268,15 +268,15 @@ def get_top_artist_and_track(request):
         response['status_message'] = 'An error has occurred while performing the task'
     return JsonResponse(response, status=stat)
 
-################################ TODO #####################################
-def get_user_recommendations(request):
+
+def get_tag_recommendations(request):
     response = {}
     if request.method != 'GET':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['recommendation'] = dbhandler.get_user_recommendations(request.GET['username'])
+        response['recommendation'] = dbhandler.get_tag_recommendations(request.GET['username'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
