@@ -8,7 +8,7 @@ JOIN
 	FROM Playlists_tbl
 	JOIN Users_tbl
 	ON Playlists_tbl.user_id = Users_tbl.user_id
-	WHERE user_name = 'aa'
+	WHERE user_name = {username}
 ) AS ptu
 ON ptt.playlist_id = ptu.playlist_id
 JOIN Tags_tbl AS tt
