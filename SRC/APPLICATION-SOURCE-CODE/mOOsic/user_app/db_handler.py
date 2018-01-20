@@ -138,7 +138,7 @@ def update_user_history(username, danceability, energy, playlist_name, tag=None)
         cursor.execute(q, args)
         cnx.commit()
         # close_db_connection(cnx, cursor)
-        return
+        return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
