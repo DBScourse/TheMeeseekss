@@ -16,5 +16,7 @@ urlpatterns = [
     url(r'^logout', views.logout),  # logout the user with it's username
     url(r'^login', views.login),  # login the user with it's username and password
     url(r'^register', views.register),  # register new user with username and password
+    url(r'^get_artist_song', views.artist_songs), #view searched artist songs
+
 
 ]
