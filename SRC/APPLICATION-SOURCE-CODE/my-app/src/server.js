@@ -71,7 +71,7 @@ export default class Server {
     }
     
     getPlaylists() {
-        return fetch('/api/get_playlists?username='+this.username)
+        return fetch('/api/get_playlists?username='+this.username.username)
             .then(res => res.json())
             .then(res => 
                 {if (res.status_message == 'Data pulled successfully') {
