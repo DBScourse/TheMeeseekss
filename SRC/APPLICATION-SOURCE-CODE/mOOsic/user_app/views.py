@@ -2,9 +2,9 @@
 from __future__ import unicode_literals
 from django.http import JsonResponse
 import db_handler as dbhandler
-import user_log
 import django.core.exceptions
 import django.db
+import hashlib
 
 
 # Create your views here.
@@ -13,10 +13,6 @@ def generate_playlist(request):
     if request.method != 'POST':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
-        return JsonResponse(response, status=stat)
-    if not user_log.user_check(request.body['username']):
-        stat = 401
-        response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
     try:
         response['data'] = dbhandler.update_user_history(request.body['username'], request.body['danceability'],
@@ -43,9 +39,10 @@ def login(request):
 
     try:
         # assuming input validation is done front-end
-        if dbhandler.get_password(request.body['username']) == request.body['password']:
+        hcode = hashlib.md5()
+        hcode.update(request.body['password'])
+        if dbhandler.get_password(request.body['username']) == hcode.hexdigest():
             response['is_valid'] = True
-            user_log.user_login(request.body['username'])
             stat = 200
             response['status_message'] = 'Logged in successfully'
         else:
@@ -74,11 +71,6 @@ def logout(request):
             stat = 403
             response['status_message'] = 'Invalid username'
             return JsonResponse(response, status=stat)
-        if not user_log.user_check(request.body['username']):
-            stat = 403
-            response['status_message'] = 'User not logged in'
-            return JsonResponse(response, status=stat)
-        user_log.user_logout(request.body['username'])
         stat = 200
         response['status_message'] = 'Logged out successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -102,8 +94,9 @@ def register(request):
             stat = 403
             response['status_message'] = 'Username is taken. Please try another'
             return JsonResponse(response, status=stat)
-
-        dbhandler.add_user(request.body['username'], request.body['password'])
+        hcode = hashlib.md5()
+        hcode.update(request.body['password'])
+        dbhandler.add_user(request.body['username'], hcode.hexdigest())
         # User is not logged in
         stat = 200
         response['status_message'] = 'Registered successfully'
