@@ -1,4 +1,4 @@
-SELECT tag_name
+SELECT ttt.tag_id, tag_name
 FROM TracksToTags_tbl AS ttt
 JOIN PlaylistToTracks_tbl AS ptt
 ON ttt.track_id = ptt.track_id

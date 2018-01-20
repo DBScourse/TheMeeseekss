@@ -1,6 +1,7 @@
 SELECT Tracks_tbl.track_id,
 	track_name,
 	album_name,
+	Tracks_tbl.artist_id,
 	artist_name 
 FROM Tracks_tbl
 JOIN Artists_tbl

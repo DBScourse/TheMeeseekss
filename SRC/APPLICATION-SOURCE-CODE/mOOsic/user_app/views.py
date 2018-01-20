@@ -5,6 +5,7 @@ import db_handler as dbhandler
 import django.core.exceptions
 import django.db
 import hashlib
+import json
 
 
 # Create your views here.
@@ -15,9 +16,10 @@ def generate_playlist(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['data'] = dbhandler.update_user_history(request.body['username'], request.body['danceability'],
-                                                         request.body['energy'],
-                                                         request.body['tags'], request.body['playlist_name'])
+        body = json.loads(request.body)
+        response['data'] = dbhandler.update_user_history(body['username'], body['danceability'],
+                                                         body['energy'],
+                                                         body['tags'], body['playlist_name'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -39,9 +41,10 @@ def login(request):
 
     try:
         # assuming input validation is done front-end
+        body = json.loads(request.body)
         hcode = hashlib.md5()
-        hcode.update(request.body['password'])
-        if dbhandler.get_password(request.body['username']) == hcode.hexdigest():
+        hcode.update(body['password'])
+        if dbhandler.get_password(body['username']) == hcode.hexdigest():
             response['is_valid'] = True
             stat = 200
             response['status_message'] = 'Logged in successfully'
@@ -67,7 +70,8 @@ def logout(request):
         return JsonResponse(response, status=stat)
     try:
         # assuming input validation is done front-end
-        if not dbhandler.is_user(request.body['username']):
+        body = json.loads(request.body)
+        if not dbhandler.is_user(body['username']):
             stat = 403
             response['status_message'] = 'Invalid username'
             return JsonResponse(response, status=stat)
@@ -90,13 +94,14 @@ def register(request):
         return JsonResponse(response, status=stat)
     try:
         # assuming input validation is done front-end
-        if dbhandler.is_user(request.body['username']):
+        body = json.loads(request.body)
+        if dbhandler.is_user(body['username']):
             stat = 403
             response['status_message'] = 'Username is taken. Please try another'
             return JsonResponse(response, status=stat)
         hcode = hashlib.md5()
-        hcode.update(request.body['password'])
-        dbhandler.add_user(request.body['username'], hcode.hexdigest())
+        hcode.update(body['password'])
+        dbhandler.add_user(body['username'], hcode.hexdigest())
         # User is not logged in
         stat = 200
         response['status_message'] = 'Registered successfully'
@@ -279,6 +284,7 @@ def get_tag_recommendations(request):
         stat = 503
         response['status_message'] = 'An error has occurred while performing the task'
     return JsonResponse(response, status=stat)
+
 
 def artist_songs(request):
     response = {}
