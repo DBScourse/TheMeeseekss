@@ -110,7 +110,7 @@ def add_user(username, password):
         close_db_connection(cnx, cursor)
 
 
-def update_user_history(username, danceability, energy, playlist_name, tag=None):
+def create_playlist(username, danceability, energy, playlist_name, tag=None):
     try:
         cnx, cursor = open_db_connection()
         q = (
