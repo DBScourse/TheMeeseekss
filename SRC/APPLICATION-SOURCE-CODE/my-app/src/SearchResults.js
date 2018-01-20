@@ -33,10 +33,10 @@ class TrackSearchResults extends Component {
                 {this.props.data.map((track) =>
                             <ListGroupItem>
                                 {"track: " + (track.name) + " artist: " + (track.artist.name)}
-                                {(this.props.playlists != null)? (
+                                {(this.props.playlists.length != 0)? (
                                 <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.props.addToPlaylist(track)}>
                                   + 
-                                    </Button>):''}
+                                    </Button>):null}
                                 <Button bsStyle="info" bsSize="xsmall" onClick={() => this.props.changeLyrics(track)}>
                                     lyrics
                                 </Button>
