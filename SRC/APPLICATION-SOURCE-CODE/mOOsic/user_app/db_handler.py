@@ -35,7 +35,7 @@ def get_password(username):
         # close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return {'password': results[0]}
+        return results[0][0]
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:

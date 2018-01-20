@@ -42,9 +42,8 @@ def login(request):
     try:
         # assuming input validation is done front-end
         body = json.loads(request.body)
-        hcode = hashlib.md5()
-        hcode.update(body['password'])
-        if dbhandler.get_password(body['username']) == hcode.hexdigest():
+        hcode = hashlib.md5(body['password']).hexdigest()
+        if dbhandler.get_password(body['username']) == hcode:
             response['is_valid'] = True
             stat = 200
             response['status_message'] = 'Logged in successfully'
