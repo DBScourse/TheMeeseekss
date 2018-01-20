@@ -67,8 +67,15 @@ export default class Server {
     
     
     search(artistName) {
-        return fetch(this.server + '/api/search?name=' + artistName)
+        return fetch(this.server + '/api/free_search?search_query=' + artistName)
             .then(res => res.json())
+            .then(res => {
+                if (res.status_message == 'Data pulled successfully') {
+                    return res.search_result
+                } else {
+                    return Promise.reject(new Error(res.status_message))
+                }
+            })
     }
     
     getArtistSongs(artistId) {
@@ -84,6 +91,13 @@ export default class Server {
                 password: password
             })
         }).then(res => res.json())
+        .then(res => {
+                if (res.is_valid == true) {
+                    return
+                } else {
+                    return Promise.reject(new Error(res.status_message))
+                }
+        })
     }
     
     register(name, password) {
@@ -94,5 +108,12 @@ export default class Server {
                 password: password
             })
         }).then(res => res.json())
+          .then(res => {
+            if (res.status_message == 'Registered successfully'){
+                return
+            } else {
+                return Promise.reject(new Error(res.status_message))
+            }
+        })
     }
 }
