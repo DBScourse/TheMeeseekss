@@ -49,9 +49,6 @@ def get_user_data(username):
             "SELECT playlist_id, playlist_name FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s")
         cursor.execute(q, (username,))
         results = [{'name': playlist_name, 'id': playlist_id} for playlist_name, playlist_id in cursor]
-        # close_db_connection(cnx, cursor)
-        if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
