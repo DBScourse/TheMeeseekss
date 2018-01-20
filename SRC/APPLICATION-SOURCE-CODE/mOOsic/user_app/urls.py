@@ -7,7 +7,7 @@ urlpatterns = [
     url(r'^get_playlists', views.get_user_playlists),  # get a list of the user's playlists
     url(r'^get_playlist', views.get_user_playlist_by_id),  # get a list of tracks by playlist id
     url(r'^get_lyrics', views.get_lyrics_by_track_id),  # get a track's lyrics by it's id
-    url(r'^get_playlist_recommendation', views.get_artist_recommendation_from_last_playlist),  # get artist recommendation from the user's last playlist. requires username
+    url(r'^get_artist_recommendation', views.get_artist_recommendation_from_last_playlist),  # get artist recommendation from the user's last playlist. requires username
     url(r'^get_tops', views.get_top_artist_and_track),  # get the top artist and top track, not parameters needed
     url(r'^get_tags_recommendation', views.get_tag_recommendations),  # get tag recommendations by username
     url(r'^add_song_to_playlist', views.add_song_to_playlist),  # add song to playlist by  and tack id

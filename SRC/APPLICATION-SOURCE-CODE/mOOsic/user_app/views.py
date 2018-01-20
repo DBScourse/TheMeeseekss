@@ -113,26 +113,6 @@ def register(request):
     return JsonResponse(response, status=stat)
 
 
-def user_page(request):
-    response = {}
-    if request.method != 'GET':
-        stat = 400
-        response['status_message'] = 'Illegal request. Please try again'
-        return JsonResponse(response, status=stat)
-    try:
-        response['user_data'] = dbhandler.get_user_data(request.GET['username'])
-        stat = 200
-        response['status_message'] = 'Data pulled successfully'
-        # Assuming the user is logged in - validated in front end
-    except django.core.exceptions.EmptyResultSet:
-        stat = 404
-        response['status_message'] = 'Empty result set'
-    except django.db.Error:
-        stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
-    return JsonResponse(response, status=stat)
-
-
 def free_search(request):
     response = {}
     if request.method != 'GET':
@@ -302,3 +282,4 @@ def artist_songs(request):
         stat = 503
         response['status_message'] = 'An error has occurred while performing the task'
     return JsonResponse(response, status=stat)
+

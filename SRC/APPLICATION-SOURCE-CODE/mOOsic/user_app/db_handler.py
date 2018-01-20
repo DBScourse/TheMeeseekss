@@ -249,6 +249,7 @@ def get_artist_recommendation_from_last_playlist(username):
     #     close_db_connection(cnx, cursor)
 
 
+
 def get_tag_recommendations(username):
     try:
         cnx, cursor = open_db_connection()
@@ -284,22 +285,4 @@ def get_tracks_by_artist(name):
     finally:
         close_db_connection(cnx, cursor)
 
-# def get_playlist(username, danceability, energy):
-#     cnx, cursor = open_db_connection()
-#
-#     close_db_connection(cnx, cursor)
-#     return []
 
-
-# def get_recommendation_by_playlist(playlist_id):
-#     cnx, cursor = open_db_connection()
-#
-#     close_db_connection(cnx, cursor)
-#     return None
-
-
-# def get_playlist_by_id(username, playlist_id):
-#     cnx, cursor = open_db_connection()
-#
-#     close_db_connection(cnx, cursor)
-#     return None
