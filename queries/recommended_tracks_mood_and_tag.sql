@@ -1,6 +1,7 @@
 SELECT tb.track_id,
     track_name,
     album_name,
+    tb.artist_id,
     artist_name 
 FROM Tracks_tbl AS tb
 JOIN TracksToTags_tbl AS ttb

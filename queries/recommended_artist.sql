@@ -1,4 +1,4 @@
-SELECT artist_name
+SELECT art.artist_id, artist_name
 FROM Artists_tbl AS art
 JOIN Tracks_tbl AS tt
 ON art.artist_id = tt.artist_id
@@ -15,14 +15,14 @@ JOIN
 		ON ptt2.playlist_id = pt2.playlist_id
 		JOIN Users_tbl AS ut2
 		ON pt2.user_id = ut2.user_id
-		WHERE user_name = 'aaa'
+		WHERE user_name = {username}
 		AND pt2.playlist_timestamp = 
 		(
 			SELECT MAX(playlist_timestamp)
 			FROM Playlists_tbl
 			JOIN Users_tbl
 			ON Playlists_tbl.user_id = Users_tbl.user_id
-			WHERE user_name = 'aaa'
+			WHERE user_name = {username}
 		)
 	) AS tracks_in_playlist
 	ON Tracks_tbl.track_id = tracks_in_playlist.track_id
@@ -47,14 +47,14 @@ HAVING COUNT(art.artist_id) >= ALL
 			ON ptt4.playlist_id = pt4.playlist_id
 			JOIN Users_tbl AS ut4
 			ON pt4.user_id = ut4.user_id
-			WHERE user_name = 'aaa'
+			WHERE user_name = {username}
 			AND pt4.playlist_timestamp = 
 			(
 				SELECT MAX(playlist_timestamp)
 				FROM Playlists_tbl
 				JOIN Users_tbl
 				ON Playlists_tbl.user_id = Users_tbl.user_id
-				WHERE user_name = 'aaa'
+				WHERE user_name = {username}
 			)
 		) AS tracks_in_playlist
 		ON Tracks_tbl.track_id = tracks_in_playlist.track_id

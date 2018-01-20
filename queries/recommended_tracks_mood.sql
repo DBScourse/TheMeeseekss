@@ -1,6 +1,7 @@
 SELECT tb.track_id,
     track_name,
     album_name,
+    tb.artist_id,
     artist_name 
 FROM Tracks_tbl AS tb
 JOIN Artists_tbl
@@ -9,7 +10,7 @@ WHERE mood_id =
 (
     SELECT mood_id
     FROM Moods_tbl
-    WHERE ABS(danceability - %d}) < 0.0001 AND ABS(energy - %d) < 0.0001
+    WHERE ABS(danceability - {danceability}) < 0.0001 AND ABS(energy - {energy}) < 0.0001
     LIMIT 1
 )
 LIMIT 20
