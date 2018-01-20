@@ -114,6 +114,7 @@ export default class Server {
         })
     }
     search(artistName) {
+        console.log(artistName)
         return fetch('/api/free_search?search_query=' + artistName)
             .then(res => res.json())
             .then(res => {

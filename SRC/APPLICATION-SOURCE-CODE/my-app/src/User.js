@@ -152,7 +152,8 @@ export default class User extends Component {
     }
     
     search(userInput) {
-        this.server.search(userInput.data)
+        console.log(userInput)
+        this.server.search(userInput)
             .then(res => this.setState({
                 currentResults: {
                     type: 'artist',
