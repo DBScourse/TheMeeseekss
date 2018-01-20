@@ -5,11 +5,14 @@ export default class Tops extends Component {
   
 
   render() {
+    if (this.props.tops == null) {
+        return <div>Loading...</div>
+    }
+
     return (
         <div>
-            top artist is: {this.props.topArtist}<br/>
-            <br/>
-            top song: {this.props.topSong}
+            <div>top artist is: {this.props.tops.artist.name}</div>
+            <div>top song: {this.props.tops.track.name}</div>
         </div>
     );
   }    

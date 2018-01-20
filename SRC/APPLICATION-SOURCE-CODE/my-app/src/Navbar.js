@@ -10,20 +10,35 @@ export default class MoosicsNavbar extends Component {
           freeSearchData: '',
         }
     }
+
     freeSearchHandleChange(value) {
         this.setState({freeSearchData: value})
     }
+
     searchArtist(){
         this.setState({freeSearchType: "artist"})
     }
+
     searchTrack(){
         this.setState({freeSearchType: "track"})
     }
+
     search(){
         this.props.search({type:this.state.freeSearchType, data:this.state.freeSearchData})
         this.setState({freeSearchData: ""});
     }
+
     render() {
+        var playlistsMenuItems;
+        if (this.props.playlists == null) {
+            playlistsMenuItems = "Loading...";
+        } else if (this.props.playlists.length == 0) {
+            playlistsMenuItems = "No playlists yet";
+        } else {
+            playlistsMenuItems = this.props.playlists.map((playlist) =>
+                <MenuItem onSelect={() => this.props.onChangePlaylist(playlist)}>{playlist.name}</MenuItem>)
+        }
+
         return (
             <div>
                 <Navbar>
@@ -34,8 +49,7 @@ export default class MoosicsNavbar extends Component {
                     </Navbar.Header>
                     <Nav>
                         <NavDropdown eventKey={2} title="your playlists" id="basic-nav-dropdown">
-                            {this.props.playlists == null? "Loading..." : this.props.playlists.map((playlist) =>
-                                <MenuItem onSelect={() => this.props.onChangePlaylist(playlist)}>{playlist.name}</MenuItem>)}
+                            {playlistsMenuItems}
                         </NavDropdown>
                     </Nav>
                     <Nav pullLeft>

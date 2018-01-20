@@ -29,8 +29,11 @@ export default class User extends Component {
         this.state = {
           playlists: null,
           tops: null,
-          tagsRecommendation: null,
-          playlistRecommendation: null,
+          recommendations: {
+              track: null,
+              artist: null,
+              tags: null
+          },
           artistRecommendation: null,
           currentPlaylist: null,
           currentLyrics: null,
@@ -43,11 +46,18 @@ export default class User extends Component {
     
     componentDidMount() {
         var playlists_promise = this.server.getPlaylists();
-        
+
         playlists_promise
             .then(res => this.setState({playlists: res}));
         playlists_promise
-            .then(res => this.onChangePlaylist(res[0]));
+            .then(res => {
+                if (res.length != 0) {
+                    this.onChangePlaylist(res[0])
+                }
+            });
+
+        this.server.getTops()
+            .then(res => this.setState({tops: res}));
     }
 
     onChangePlaylist(playlist) {
@@ -56,26 +66,41 @@ export default class User extends Component {
     }
 
     showPlaylist(playlist) {
-        this.setState({currentPlaylist: playlist});
+        this.setState({
+            currentPlaylist: playlist,
+        });
 
         this.changeLyrics(playlist.tracks[0]);
 
         this.server.getTrackRecommendation(playlist.id)
-            .then(res => this.setState({playlistRecommendation: res}));
+            .then(res => this.setState({
+                recommendations: {
+                    ...this.state.recommendations,
+                    track: res
+                }
+            }));
 
         this.server.getTagsRecommendations(playlist.id)
-            .then(res => this.setState({tagsRecommendation: res}));
+            .then(res => this.setState({
+                recommendations: {
+                    ...this.state.recommendations,
+                    tags: res
+                }
+            }));
 
         this.server.getArtistRecommendation(playlist.id)
-            .then(res => this.setState({artistRecommendation: res}));
-
-        this.server.getTops()
-            .then(res => this.setState({tops: res}));
+            .then(res => this.setState({
+                recommendations: {
+                    ...this.state.recommendations,
+                    artist: res
+                }
+            }));
     }
     
-    
     changeLyrics(track) {
-        this.setState({currentResults: null});
+        this.setState({
+            currentResults: null
+        });
         this.server.getLyrics(track.id)
             .then(res => this.setState({currentLyrics: res}));
     }
@@ -139,18 +164,51 @@ export default class User extends Component {
             .then(res => this.setState({currentResults: {type: 'track', data: res}}))
     }
 
-    render() {
-        var mainComponent = "Loading..."
+    renderMain() {
         if (this.state.currentResults != null) {
-            mainComponent = <SearchResults type={this.state.currentResults.type} 
-                             data={this.state.currentResults.data}
-                             addToPlaylist={(track) => this.addToPlaylist(track)} 
-                             changeLyrics={(track) => this.changeLyrics(track)}
-                             getArtistSongs={(artistId) => this.getArtistSongs(artistId)}/>
+            return <SearchResults
+                        type={this.state.currentResults.type}
+                        data={this.state.currentResults.data}
+                        addToPlaylist={(track) => this.addToPlaylist(track)} 
+                        changeLyrics={(track) => this.changeLyrics(track)}
+                        getArtistSongs={(artistId) => this.getArtistSongs(artistId)} />
         } else if (this.state.currentLyrics != null) {
-            mainComponent = <Lyrics track={this.state.currentLyrics} />
+            return <Lyrics track={this.state.currentLyrics} />
+        } else if (this.state.playlists == null) {
+            return <div>Waiting for playlists...</div>
+        } else if (this.state.playlists.length == 0) {
+            return <div>Welcome, newbie!!!</div>
+        } else {
+            return <div>Loading...</div>
         }
+    }
 
+    renderRecommendations() {
+        if (this.state.playlists != null) {
+            if (this.state.playlists.length == 0) {
+                return <div>No Playlist</div>
+            } else {
+                return <Recommendations recommendations={this.state.recommendations} />
+            }
+        } else {
+            return <div>Waiting for playlists...</div>
+        }
+    }
+
+    renderPlaylist() {
+        if (this.state.playlists != null) {
+            if (this.state.playlists.length == 0) {
+                return <div>No Playlist</div>
+            } else {
+                return <Playlist playlist={this.state.currentPlaylist}
+                                 changeLyrics={(track) => this.changeLyrics(track)}/>
+            }
+        } else {
+            return <div>Waiting for playlists...</div>
+        }
+    }
+
+    render() {
         return (
             <div>
                 <Navbar playlists={this.state.playlists} 
@@ -162,19 +220,21 @@ export default class User extends Component {
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={6} md={4}>
-                            {(this.state.tops == null) ? "Loading..." : <Tops topArtist={this.state.tops.artist.name} topSong={this.state.tops.track.name} /> }
-                            { (this.state.tagsRecommendation==null || this.state.playlistRecommendation==null) ? "Loading..." : <Recommendations playlistRec={this.state.playlistRecommendation.name} tagsRec={this.state.tagsRecommendation.name} /> }
+                            <Tops tops={this.state.tops} />
+                            {this.renderRecommendations()}
                         </Col>
                         <Col xs={6} md={4}>
-                            {mainComponent}
+                            {this.renderMain()}
                         </Col>
-
                         <Col xs={6} md={4}>
-                            { (this.state.currentPlaylist==null) ? "Loading..." : <Playlist name={this.state.currentPlaylist.name} tracks={this.state.currentPlaylist.tracks} changeLyrics={(track) => this.changeLyrics(track)}/> }
+                            {this.renderPlaylist()}
                         </Col>
                     </Row>
                 </Grid>
-                <CreatePlaylistModal findNewPlaylist={(preferences) => this.createNewPlaylist(preferences)} show={this.state.showCreatePlaylistModal} onHide={() => this.hideCreatePlaylistModal()} />
+                <CreatePlaylistModal
+                    findNewPlaylist={(preferences) => this.createNewPlaylist(preferences)}
+                    show={this.state.showCreatePlaylistModal}
+                    onHide={() => this.hideCreatePlaylistModal()} />
             </div>
         );
     }

@@ -7,9 +7,8 @@ function sleep(time) {
 }
 
 export default class Server {
-    constructor(username) {
-        this.username = username;
-        this.server = (process.env.NODE_ENV == 'production') ? '' : 'http://localhost:8000';
+    constructor(user) {
+        this.user = user;
     }
 
     getPlaylist(id) {
@@ -85,6 +84,10 @@ export default class Server {
     }
     
     getPlaylists() {
+        if (this.user.username == "empty") {
+            return sleep().then(() => [])
+        }
+
         return sleep().then(() => [{
             name: 'Love',
             id: 1
