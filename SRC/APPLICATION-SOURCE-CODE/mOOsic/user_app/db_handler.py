@@ -212,7 +212,7 @@ def get_top_artist_top_track():
         cursor.execute(q)
         track = [[item[0], item[1], item[2], item[3], item[4]] for item in cursor]
         q = (
-            "SELECT Artists_tbl.artist_id, artist_name FROM Artists_tbl JOIN Tracks_tbl ON Artists_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY Artists_tbl.artist_id HAVING COUNT(Artists_tbl.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY artist_id) LIMIT 1")
+            "SELECT Artists_tbl.artist_id, artist_name FROM Artists_tbl JOIN Tracks_tbl ON Artists_tbl.artist_id = Tracks_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY Artists_tbl.artist_id HAVING COUNT(Artists_tbl.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id GROUP BY artist_id) LIMIT 1")
         cursor.execute(q)
         artist = [[item[0], item[1]] for item in cursor]
         artist = artist[0]
