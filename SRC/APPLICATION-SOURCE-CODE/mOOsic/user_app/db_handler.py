@@ -1,6 +1,3 @@
-from queries import *
-from django.db import connection
-import uuid
 import django.core.exceptions
 import django.db
 import mysql.connector
@@ -15,10 +12,9 @@ def sample_sql_query():
 
 
 def open_db_connection():
-    # TODO add connection parameters
-    cnx = mysql.connector.connect(user='scott', password='password',
-                                  host='127.0.0.1',
-                                  database='employees')
+    cnx = mysql.connector.connect(user='DbMysql19', password='DbMysql19',
+                                  host='127.0.0.1', port='3305',
+                                  database='DbMysql19')
     cursor = cnx.cursor()
     return cnx, cursor
 
@@ -42,6 +38,8 @@ def get_password(username):
         return {'password': results[0]}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_user_data(username):
@@ -57,6 +55,8 @@ def get_user_data(username):
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_tracks_by_playlist_id(username, playlist_id):
@@ -72,6 +72,8 @@ def get_tracks_by_playlist_id(username, playlist_id):
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def is_user(username):
@@ -87,6 +89,8 @@ def is_user(username):
         return True
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def add_user(username, password):
@@ -97,7 +101,10 @@ def add_user(username, password):
         close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
+        print(err)
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def update_user_history(username, danceability, energy, playlist_name, tag=None):
@@ -131,6 +138,8 @@ def update_user_history(username, danceability, energy, playlist_name, tag=None)
         return
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def search(sq):
@@ -146,6 +155,8 @@ def search(sq):
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def update_playlist(username, track_id):
@@ -158,6 +169,8 @@ def update_playlist(username, track_id):
         return
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_lyrics_by_track_id(track_id):
@@ -173,6 +186,8 @@ def get_lyrics_by_track_id(track_id):
         return {track_id: results[0]}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_top_artist_top_track():
@@ -192,26 +207,31 @@ def get_top_artist_top_track():
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 ###########################TODO#################################
 def get_artist_recommendation_from_last_playlist(username):
-    try:
-        cnx, cursor = open_db_connection()
-        if tag is not None:
-            q = (
-            "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN TracksToTags_tbl as ttt ON tt.track_id = ttt.track_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id JOIN Tags_tbl AS tg ON tg.tag_id = ttt.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt2 JOIN TracksToTags_tbl AS ttt2 ON tt2.track_id = ttt2.track_id JOIN Moods_tbl mt2 ON tt2.mood_id = mt2.mood_id JOIN Tags_tbl AS tg2 ON tg2.tag_id = ttt2.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY artist_id) LIMIT 5")
-            cursor.execute(q, (danceability, energy, tag, danceability, energy, tag))
-        else:
-            q = (
-            "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY artist_id)")
-            cursor.execute(q, (danceability, energy, danceability, energy))
-        results = [artist_name for artist_name in cursor]
-        close_db_connection(cnx, cursor)
-        if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return {'artist_name': results[0]}
-    except mysql.connector.Error as err:
-        raise django.db.Error('DB error occurred: {}'.format(err))
+    return
+    # try:
+    #     cnx, cursor = open_db_connection()
+    #     if tag is not None:
+    #         q = (
+    #         "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN TracksToTags_tbl as ttt ON tt.track_id = ttt.track_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id JOIN Tags_tbl AS tg ON tg.tag_id = ttt.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt2 JOIN TracksToTags_tbl AS ttt2 ON tt2.track_id = ttt2.track_id JOIN Moods_tbl mt2 ON tt2.mood_id = mt2.mood_id JOIN Tags_tbl AS tg2 ON tg2.tag_id = ttt2.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY artist_id) LIMIT 5")
+    #         cursor.execute(q, (danceability, energy, tag, danceability, energy, tag))
+    #     else:
+    #         q = (
+    #         "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY artist_id)")
+    #         cursor.execute(q, (danceability, energy, danceability, energy))
+    #     results = [artist_name for artist_name in cursor]
+    #     close_db_connection(cnx, cursor)
+    #     if not results:
+    #         raise django.core.exceptions.EmptyResultSet('Empty result set')
+    #     return {'artist_name': results[0]}
+    # except mysql.connector.Error as err:
+    #     raise django.db.Error('DB error occurred: {}'.format(err))
+    # finally:
+    #     close_db_connection(cnx, cursor)
 
 
 def get_tag_recommendations(username):
@@ -227,6 +247,8 @@ def get_tag_recommendations(username):
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_tracks_by_artist(name):
@@ -242,6 +264,8 @@ def get_tracks_by_artist(name):
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 # def get_playlist(username, danceability, energy):
 #     cnx, cursor = open_db_connection()
