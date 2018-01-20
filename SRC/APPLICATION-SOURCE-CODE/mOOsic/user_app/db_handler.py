@@ -227,27 +227,18 @@ def get_top_artist_top_track():
         close_db_connection(cnx, cursor)
 
 
-###########################TODO#################################
 def get_artist_recommendation_from_last_playlist(username):
-    return
-    # try:
-    #     cnx, cursor = open_db_connection()
-    #     if tag is not None:
-    #         q = (
-    #         "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN TracksToTags_tbl as ttt ON tt.track_id = ttt.track_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id JOIN Tags_tbl AS tg ON tg.tag_id = ttt.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt2 JOIN TracksToTags_tbl AS ttt2 ON tt2.track_id = ttt2.track_id JOIN Moods_tbl mt2 ON tt2.mood_id = mt2.mood_id JOIN Tags_tbl AS tg2 ON tg2.tag_id = ttt2.tag_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 AND tag_name = %s GROUP BY artist_id) LIMIT 5")
-    #         cursor.execute(q, (danceability, energy, tag, danceability, energy, tag))
-    #     else:
-    #         q = (
-    #         "SELECT artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt JOIN Moods_tbl mt ON tt.mood_id = mt.mood_id WHERE abs(danceability - %d) < 0.0001 AND abs(energy - %d) < 0.0001 GROUP BY artist_id)")
-    #         cursor.execute(q, (danceability, energy, danceability, energy))
-    #     results = [artist_name for artist_name in cursor]
-    #     if not results:
-    #         raise django.core.exceptions.EmptyResultSet('Empty result set')
-    #     return {'artist_name': results[0]}
-    # except mysql.connector.Error as err:
-    #     raise django.db.Error('DB error occurred: {}'.format(err))
-    # finally:
-    #     close_db_connection(cnx, cursor)
+    try:
+        cnx, cursor = open_db_connection()
+        q = ("SELECT art.artist_id, artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt2.track_id FROM PlaylistToTracks_tbl AS ptt2 JOIN Playlists_tbl AS pt2 ON ptt2.playlist_id = pt2.playlist_id JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s AND pt2.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl ON tt.mood_id = moods_in_pl.mood_id GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt3 JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt4.track_id FROM PlaylistToTracks_tbl AS ptt4 JOIN Playlists_tbl AS pt4 ON ptt4.playlist_id = pt4.playlist_id JOIN Users_tbl AS ut4 ON pt4.user_id = ut4.user_id WHERE user_name = %s AND pt4.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl2 ON tt3.mood_id = moods_in_pl2.mood_id GROUP BY artist_id) LIMIT 1")
+        results = [item for item in cursor]
+        if not results:
+            raise django.core.exceptions.EmptyResultSet('Empty result set')
+        return {'name': results[0][1], 'id': results[0][0]}
+    except mysql.connector.Error as err:
+        raise django.db.Error('DB error occurred: {}'.format(err))
+    finally:
+        close_db_connection(cnx, cursor)
 
 
 def get_tag_recommendations(username):
