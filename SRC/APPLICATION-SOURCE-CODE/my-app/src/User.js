@@ -12,7 +12,7 @@ import ServerMock from "./serverMock.js";
 
 import "./User.css";
 
-var useMock = true;
+var useMock = false;
 
 
 
@@ -57,7 +57,9 @@ export default class User extends Component {
             });
 
         this.server.getTops()
-            .then(res => this.setState({tops: res}));
+            .then(res => {
+                this.setState({tops: res})
+            });
     }
 
     onChangePlaylist(playlist) {
@@ -107,7 +109,7 @@ export default class User extends Component {
 
     addToPlaylist(track) {
         var playlistId = this.state.currentPlaylist.id;
-        this.server.addToPlaylist(track.id, playlistId)
+        this.server.addToPlaylist(track.id)
             .then(() => {
                 if (this.state.currentPlaylist.id != playlistId) {
                     return;
@@ -144,13 +146,14 @@ export default class User extends Component {
     
     
     createNewPlaylist(playlistPreferences) {
-        this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceability, 
-                                      playlistPreferences.energy, playlistPreferences.tags)
+        this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceability/1000.0, 
+                                      playlistPreferences.energy/1000.0, playlistPreferences.tags)
             .then(res => this.showCreatedPlaylist(res));
     }
     
     search(userInput) {
-        this.server.search(userInput.data)
+        console.log(userInput)
+        this.server.search(userInput)
             .then(res => this.setState({
                 currentResults: {
                     type: 'artist',
@@ -165,6 +168,7 @@ export default class User extends Component {
     }
 
     renderMain() {
+        console.log(this.state)
         if (this.state.currentResults != null) {
             return <SearchResults
                         type={this.state.currentResults.type}
@@ -209,6 +213,8 @@ export default class User extends Component {
     }
 
     render() {
+        {console.log(this.state)}
+        {console.log(this.state.playlist)}
         return (
             <div>
                 <Navbar playlists={this.state.playlists} 

@@ -17,9 +17,9 @@ def generate_playlist(request):
         return JsonResponse(response, status=stat)
     try:
         body = json.loads(request.body)
-        response['data'] = dbhandler.update_user_history(body['username'], body['danceability'],
-                                                         body['energy'],
-                                                         body['tags'], body['playlist_name'])
+        response['data'] = dbhandler.create_playlist(body['username'], body['danceability'],
+                                                     body['energy'],
+                                                     body['tags'], body['playlist_name'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -113,26 +113,6 @@ def register(request):
     return JsonResponse(response, status=stat)
 
 
-def user_page(request):
-    response = {}
-    if request.method != 'GET':
-        stat = 400
-        response['status_message'] = 'Illegal request. Please try again'
-        return JsonResponse(response, status=stat)
-    try:
-        response['user_data'] = dbhandler.get_user_data(request.GET['username'])
-        stat = 200
-        response['status_message'] = 'Data pulled successfully'
-        # Assuming the user is logged in - validated in front end
-    except django.core.exceptions.EmptyResultSet:
-        stat = 404
-        response['status_message'] = 'Empty result set'
-    except django.db.Error:
-        stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
-    return JsonResponse(response, status=stat)
-
-
 def free_search(request):
     response = {}
     if request.method != 'GET':
@@ -140,7 +120,7 @@ def free_search(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['search_result'] = dbhandler.search(request.GET['search_query'])
+        response['data'] = dbhandler.search(request.GET['search_query'])
         stat = 200
         response['status_message'] = 'Data pulled successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -159,7 +139,7 @@ def get_user_playlists(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['user_data'] = dbhandler.get_user_data(request.GET['username'])
+        response['data'] = dbhandler.get_user_data(request.GET['username'])
         stat = 200
         response['status_message'] = 'Data pulled successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -197,7 +177,7 @@ def get_user_playlist_by_id(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['playlist'] = dbhandler.get_tracks_by_playlist_id(request.GET['username'], request.GET['playlist_id'])
+        response['data'] = dbhandler.get_tracks_by_playlist_id(request.GET['username'], request.GET['playlist_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -216,7 +196,7 @@ def get_lyrics_by_track_id(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['lyrics'] = dbhandler.get_lyrics_by_track_id(request.GET['track_id'])
+        response['data'] = dbhandler.get_lyrics_by_track_id(request.GET['track_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -235,7 +215,7 @@ def get_artist_recommendation_from_last_playlist(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['recommendation'] = dbhandler.get_artist_recommendation_from_last_playlist(request.GET['username'])
+        response['data'] = dbhandler.get_artist_recommendation_from_last_playlist(request.GET['username'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -254,7 +234,7 @@ def get_top_artist_and_track(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['tops'] = dbhandler.get_top_artist_top_track()
+        response['data'] = dbhandler.get_top_artist_top_track()
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -273,7 +253,7 @@ def get_tag_recommendations(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['recommendation'] = dbhandler.get_tag_recommendations(request.GET['username'])
+        response['data'] = dbhandler.get_tag_recommendations(request.GET['username'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -292,7 +272,7 @@ def artist_songs(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['tracks'] = dbhandler.get_tracks_by_artist(request.GET['id'])
+        response['data'] = dbhandler.get_tracks_by_artist(request.GET['id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
