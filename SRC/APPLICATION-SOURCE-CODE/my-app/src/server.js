@@ -9,7 +9,7 @@ export default class Server {
             .then(res => res.json())
             .then(res => res.playlist)
             .then(res => ({
-                id: id, name: playlistname, tracks: [res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))]}));
+                id: id, name: playlistname, tracks: res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))}));
     }
 
     getTrackRecommendation(playlistId) {
@@ -62,15 +62,14 @@ export default class Server {
                 energy: energy,
                 tags: tags
             })
-        }).then(res => res.json())
+        }).then((res) => res.json())
         .then(res => {
-            if (res.status != 200) {
+            if (res.status_message != 'Playlist generated successfully') {
                 return Promise.reject(new Error(res.response.status_message))
-        })
-        .then()
-    track_id, track_name, album_name, artist_name
-    
-    
+            }
+            //ADI
+        })     
+    }
     search(artistName) {
         return fetch(this.server + '/api/free_search?search_query=' + artistName)
             .then(res => res.json())
@@ -98,10 +97,10 @@ export default class Server {
             })
         }).then(res => res.json())
         .then(res => {
-                if (res.status == 200) {
+                if (res.status_message == 'Logged in successfully') {
                     return
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }
         })
     }
@@ -115,10 +114,10 @@ export default class Server {
             })
         }).then(res => res.json())
           .then(res => {
-            if (res.status == 200){
+            if (res.status_message == 'Registered successfully'){
                 return
             } else {
-                return Promise.reject(new Error(res.response.status_message))
+                return Promise.reject(new Error(res.status_message))
             }
         })
     }
