@@ -196,7 +196,7 @@ def get_lyrics_by_track_id(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['data'] = dbhandler.get_lyrics_by_track_id(request.GET['track_id'])
+        response['data'] = dbhandler.get_lyrics_by_track_id(request.GET['lyrics_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:

@@ -101,7 +101,7 @@ def add_user(username, password):
         # close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
-        print(err)
+        print err
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
         close_db_connection(cnx, cursor)
@@ -189,7 +189,7 @@ def get_lyrics_by_track_id(track_id):
         if not lyr:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
         q = (
-            "SELECT track_id, track_name, artist_id, artist_name FROM Tracks_tbl, Artist_tbl WHERE track_id = %s AND Tracks_tbl.artist_id = Artist_tbl.artist_id")
+            "SELECT track_id, track_name, Tracks_tbl.artist_id, artist_name FROM Tracks_tbl, Artists_tbl WHERE track_id = %s AND Tracks_tbl.artist_id = Artists_tbl.artist_id")
         cursor.execute(q, (track_id,))
         tr = [item for item in cursor]
         if not tr:
@@ -198,6 +198,7 @@ def get_lyrics_by_track_id(track_id):
         tr = tr[0]
         return {'name': tr[1], 'id': tr[0], 'lyrics': lyr[0], 'artist': {'name': tr[3], 'id': tr[2]}}
     except mysql.connector.Error as err:
+        print err
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
         close_db_connection(cnx, cursor)
@@ -259,7 +260,7 @@ def get_tracks_by_artist(artist_id):
         cnx, cursor = open_db_connection()
         q = (
             "SELECT tb.track_id, track_name, album_name, tb.artist_id, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl AS art ON tb.artist_id = art.artist_id WHERE tb.artist_id = %s LIMIT 20")
-        cursor.execute(q, (artist_id,))
+        cursor.execute(q, (int(artist_id),))
         results = [item for item in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
