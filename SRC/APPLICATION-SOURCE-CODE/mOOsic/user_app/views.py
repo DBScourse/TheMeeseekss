@@ -53,7 +53,7 @@ def login(request):
             response['status_message'] = 'Bad Credentials'
     except django.core.exceptions.EmptyResultSet:
         stat = 404
-        response['status_message'] = 'Empty result set'
+        response['status_message'] = 'Unknown Username'
     except django.db.Error:
         stat = 503
         response['status_message'] = 'An error has occurred while performing the task'
