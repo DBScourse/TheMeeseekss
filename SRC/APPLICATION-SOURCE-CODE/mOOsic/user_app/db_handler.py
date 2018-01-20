@@ -192,7 +192,7 @@ def get_lyrics_by_track_id(track_id):
         if not lyr:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
         q = (
-        "SELECT track_id, track_name, artist_id, artist_name FROM Tracks_tbl, Artist_tbl WHERE track_id = %s AND Tracks_tbl.artist_id = Artist_tbl.artist_id")
+            "SELECT track_id, track_name, artist_id, artist_name FROM Tracks_tbl, Artist_tbl WHERE track_id = %s AND Tracks_tbl.artist_id = Artist_tbl.artist_id")
         cursor.execute(q, (track_id,))
         tr = [item for item in cursor]
         if not tr:
@@ -219,7 +219,8 @@ def get_top_artist_top_track():
         artist = [[item[0], item[1]] for item in cursor]
         artist = artist[0]
         track = track[0]
-        return {'track': {'name': track[1], 'id': track[0], 'album': track[2], 'artist': {'name': track[4], 'id': track[3]}}, 'artist': {'name': artist[1], 'id': artist[0]}}
+        return {'track': {'name': track[1], 'id': track[0], 'album': track[2],
+                          'artist': {'name': track[4], 'id': track[3]}}, 'artist': {'name': artist[1], 'id': artist[0]}}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
@@ -254,32 +255,30 @@ def get_tag_recommendations(username):
     try:
         cnx, cursor = open_db_connection()
         q = (
-            "SELECT tag_name FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id JOIN Tags_tbl AS tt ON tt.tag_id = ttt.tag_id GROUP BY ttt.tag_id HAVING COUNT(ttt.tag_id) >= ALL (SELECT COUNT(tag_id) FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id GROUP BY tag_id) LIMIT 5")
+            "SELECT ttt.tag_id, tag_name FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id JOIN Tags_tbl AS tt ON tt.tag_id = ttt.tag_id GROUP BY ttt.tag_id HAVING COUNT(ttt.tag_id) >= ALL (SELECT COUNT(tag_id) FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id GROUP BY tag_id) LIMIT 5")
         cursor.execute(q, (username, username))
-        results = [tag_name for tag_name in cursor]
-        # close_db_connection(cnx, cursor)
+        results = [item for item in cursor]
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return results
+        return [item[1] for item in results]
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
         close_db_connection(cnx, cursor)
 
 
-def get_tracks_by_artist(name):
+def get_tracks_by_artist(artist_id):
     try:
         cnx, cursor = open_db_connection()
         q = (
-            "SELECT tb.track_id, track_name, album_name, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE artist_name = %s LIMIT 20")
-        cursor.execute(q, (name,))
-        results = [
-            {'name': track_name, 'id': track_id, 'album': album_name, 'artist': {'name': artist_name, 'id': artist_id}}
-            for track_id, track_name, album_name, artist_name, artist_id in cursor]
+            "SELECT tb.track_id, track_name, album_name, tb.artist_id, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl AS art ON tb.artist_id = art.artist_id WHERE tb.artist_id = %s LIMIT 20")
+        cursor.execute(q, (artist_id,))
+        results = [item for item in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
-        return results
+        return [{'name': item[1], 'id': item[0], 'album': item[2], 'artist': {'name': item[4], 'id': item[3]}} for item
+                in results]
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
