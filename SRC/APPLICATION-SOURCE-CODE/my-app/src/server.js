@@ -52,7 +52,7 @@ export default class Server {
             .then(res => res.json());
     }
     
-    createNewPlaylist(this.username, name, danceability, energy, tags) {
+    createNewPlaylist(this.state.username, name, danceability, energy, tags) {
         return fetch(this.server + '/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({
