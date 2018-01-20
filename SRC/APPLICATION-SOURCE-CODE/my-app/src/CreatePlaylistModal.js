@@ -60,7 +60,7 @@ export default class CreatePlaylistModal extends Component {
                     <div className='slider'>
                         <Slider 
                             min={0}
-                            max={100}
+                            max={1000}
                             value={this.state.danceabilityValue}
                             onChange={(value) => this.danceabilityHandleChange(value)}
                         />
@@ -71,7 +71,7 @@ export default class CreatePlaylistModal extends Component {
                     <div className='slider'>
                         <Slider 
                             min={0}
-                            max={100}
+                            max={1000}
                             value={this.state.energyValue}
                             onChange={(value) => this.energyHandleChange(value)}
                         />

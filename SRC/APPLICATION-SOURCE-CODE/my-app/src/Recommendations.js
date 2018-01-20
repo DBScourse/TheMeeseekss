@@ -19,11 +19,20 @@ export default class Recommendations extends Component {
       }
   }
   
+/*  renderTrackRecommendation() {
+      if (this.props.recommendations.track == null) {
+          return <div>Loading...</div>
+      } else {
+          return <div>you may also like the song: {this.props.recommendations.track.name}</div>
+      }
+  }*/
+  
   render() {
     return (
         <div>
             {this.renderTagsRecommendation()}
             {this.renderArtistRecommendation()}
+            /*{this.renderTrackRecommendation()}*/
         </div>
        );
   }    

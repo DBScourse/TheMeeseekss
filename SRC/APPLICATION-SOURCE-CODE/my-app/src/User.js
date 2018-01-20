@@ -144,8 +144,8 @@ export default class User extends Component {
     
     
     createNewPlaylist(playlistPreferences) {
-        this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceability, 
-                                      playlistPreferences.energy, playlistPreferences.tags)
+        this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceability/1000.0, 
+                                      playlistPreferences.energy/1000.0, playlistPreferences.tags)
             .then(res => this.showCreatedPlaylist(res));
     }
     
