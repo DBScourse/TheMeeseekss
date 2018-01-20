@@ -62,6 +62,11 @@ export default class Server {
                 tags: tags
             })
         }).then(res => res.json())
+        .then(res => {
+            if (res.status == 200) {
+                return res.response.data
+            }
+        })
     }
     
     
@@ -92,10 +97,10 @@ export default class Server {
             })
         }).then(res => res.json())
         .then(res => {
-                if (res.is_valid == true) {
+                if (res.response.is_valid == true) {
                     return
                 } else {
-                    return Promise.reject(new Error(res.status_message))
+                    return Promise.reject(new Error(res.response.status_message))
                 }
         })
     }
@@ -109,10 +114,10 @@ export default class Server {
             })
         }).then(res => res.json())
           .then(res => {
-            if (res.status_message == 'Registered successfully'){
+            if (res.statuse == 200){
                 return
             } else {
-                return Promise.reject(new Error(res.status_message))
+                return Promise.reject(new Error(res.response.status_message))
             }
         })
     }
