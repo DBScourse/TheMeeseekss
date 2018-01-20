@@ -9,7 +9,4 @@ JOIN PlaylistToTracks_tbl
 ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id
 JOIN Playlists_tbl
 ON PlaylistToTracks_tbl.playlist_id = Playlists_tbl.playlist_id
-JOIN Users_tbl
-ON Playlists_tbl.user_id = Users_tbl.user_id
-WHERE user_name = {username}
 AND Playlists_tbl.playlist_id = {playlist_id}
