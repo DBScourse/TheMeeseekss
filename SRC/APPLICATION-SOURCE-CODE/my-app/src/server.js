@@ -7,25 +7,50 @@ export default class Server {
     getPlaylist(id, playlistname) {
         return fetch('/api/get_playlist?playlistId=' + id +'&username=' + this.state.username)
             .then(res => res.json())
-            .then(res => res.playlist)
-            .then(res => ({
-                id: id, name: playlistname, tracks: res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))}));
+            .then(res => {
+                if (res.status_message == 'Data pulled successfully') {
+                    return res.data
+                } else {
+                    return Promise.reject(new Error(res.response.status_message))
+                }
+            })
     }
 
 
     getTagsRecommendations(playlistId) {
         return fetch('/api/get_tags_recommendation?id=' + playlistId)
-            .then(res => res.json());
+            .then(res => res.json())
+            .then(res => {
+                if (res.status_message == 'Playlist updated successfully') {
+                    return res.data
+                } else {
+                    return Promise.reject(new Error(res.response.status_message))
+                }
+            })
     }
     
     getArtistRecommendation(playlistId) {
         return fetch('/api/get_artist_recommendation?id=' + playlistId)
-            .then(res => res.json());
+            .then(res => res.json())
+            .then(res => {
+                if (res.status_message == 'Playlist updated successfully') {
+                    return res.data
+                } else {
+                    return Promise.reject(new Error(res.response.status_message))
+                }
+            })
     }
     
     getLyrics(trackId) {
         return fetch('/api/get_lyrics?lyrics_id=' + trackId)
-            .then(res => res.json());
+            .then(res => res.json())
+            .then(res => {
+                if (res.status_message == 'Playlist updated successfully') {
+                    return res.data
+                } else {
+                    return Promise.reject(new Error(res.response.status_message))
+                }
+            })
     }
     
     addToPlaylist(trackId, playlistId) {
@@ -35,7 +60,14 @@ export default class Server {
                 track_id: trackId,
                 playlist_id: playlistId
             })
-        }).then(res => res.json());
+        }).then(res => res.json())
+        .then(res => {
+            if (res.status_message == 'Playlist updated successfully') {
+                return
+            } else {
+                return Promise.reject(new Error(res.response.status_message))
+            }
+        })
     }
     
     getPlaylists() {
@@ -43,7 +75,9 @@ export default class Server {
             .then(res => res.json())
             .then(res => 
                 {if (res.status_message == 'Data pulled successfully') {
-                    return 
+                    return res.data
+                } else {
+                    return Promise.reject(new Error(res.response.status_message))
                 }
                 });
     }
@@ -54,7 +88,7 @@ export default class Server {
             .then(res =>
                 {if (res.status_message == 'Playlist updated successfully') {
                     console.log(res)
-                    return res.tops
+                    return res.data
                 } else {
                     return Promise.reject(new Error(res.response.status_message))
                 }});
@@ -75,7 +109,7 @@ export default class Server {
             if (res.status_message != 'Playlist generated successfully') {
                 return Promise.reject(new Error(res.response.status_message))
             } else {
-                return res
+                return res.data
             }
         })
     }
@@ -84,7 +118,7 @@ export default class Server {
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Data pulled successfully') {
-                    return res
+                    return res.data
                 } else {
                     return Promise.reject(new Error(res.status_message))
                 }
@@ -94,6 +128,13 @@ export default class Server {
     getArtistSongs(artistId) {
         return fetch('/api/get_artist_song?id=' + artistId)
             .then(res => res.json())
+            .then (res => {
+                if (res.status_message == 'Playlist updated successfully') {
+                    return res.data
+                } else {
+                   return Promise.reject(new Error(res.status_message)) 
+                }
+            })
             
             
     }

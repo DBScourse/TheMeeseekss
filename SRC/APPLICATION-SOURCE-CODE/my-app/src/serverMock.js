@@ -60,10 +60,6 @@ export default class Server {
         return sleep().then(() => ({
             name: 'benel',
             id: 16,
-            artist: {
-                name: 'stat',
-                id: 77
-            }
         }));
     }
     

@@ -224,7 +224,6 @@ export default class User extends Component {
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={6} md={4}>
-                            console.log(this.state)
                             <Tops tops={this.state.tops} />
                             {this.renderRecommendations()}
                         </Col>
