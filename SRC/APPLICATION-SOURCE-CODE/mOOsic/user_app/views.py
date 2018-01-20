@@ -19,9 +19,9 @@ def generate_playlist(request):
         response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
     try:
-        response['data'] = dbhandler.update_user_history(request.GET['username'], request.GET['danceability'], request.GET['energy'],
-                                      request.GET['tags'], request.GET['playlist_name'])
-        # response['data'] = dbhandler.get_playlist(request.body['danceability'], request.body['energy'], request.body['tags'])
+        response['data'] = dbhandler.update_user_history(request.GET['username'], request.GET['danceability'],
+                                                         request.GET['energy'],
+                                                         request.GET['tags'], request.GET['playlist_name'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
@@ -200,7 +200,7 @@ def get_user_playlist_by_id(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        response['playlist'] = dbhandler.get_tracks_by_playlist_name(request.GET['username'], request.GET['playlist_id'])
+        response['playlist'] = dbhandler.get_tracks_by_playlist_id(request.GET['username'], request.GET['playlist_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
