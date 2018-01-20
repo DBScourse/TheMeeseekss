@@ -61,7 +61,7 @@ export default class User extends Component {
     }
 
     onChangePlaylist(playlist) {
-        this.server.getPlaylist(playlist.id)
+        this.server.getPlaylist(playlist.id, playlist.name)
             .then(res => this.showPlaylist(res));
     }
 

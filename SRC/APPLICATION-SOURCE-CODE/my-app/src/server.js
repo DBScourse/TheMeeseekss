@@ -4,9 +4,12 @@ export default class Server {
         this.server = (process.env.NODE_ENV == 'production') ? '' : 'http://localhost:8000';
     }
 
-    getPlaylist(id) {
-        return fetch(this.server + '/api/get_playlist?id=' + id)
-            .then(res => res.json());
+    getPlaylist(id, playlistname) {
+        return fetch(this.server + '/api/get_playlist?playlistId=' + id +'&username=' + this.state.username)
+            .then(res => res.json())
+            .then(res => res.playlist)
+            .then(res => ({
+                id: id, name: playlistname, tracks: [res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))]}));
     }
 
     getTrackRecommendation(playlistId) {

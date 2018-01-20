@@ -11,7 +11,7 @@ export default class Server {
         this.user = user;
     }
 
-    getPlaylist(id) {
+    getPlaylist(id, name) {
         return sleep().then(() => ({
             id: 3,
             name: 'Friends ' + id,
