@@ -41,7 +41,7 @@ def get_password(username):
     finally:
         close_db_connection(cnx, cursor)
 
-
+# TODO
 def get_user_data(username):
     try:
         cnx, cursor = open_db_connection()
@@ -63,8 +63,8 @@ def get_tracks_by_playlist_id(username, playlist_id):
     try:
         cnx, cursor = open_db_connection()
         q = (
-            "SELECT Tracks_tbl.track_id, track_name, album_name, artist_name FROM Tracks_tbl JOIN Artists_tbl ON Tracks_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id JOIN Playlists_tbl ON PlaylistToTracks_tbl.playlist_id = Playlists_tbl.playlist_id JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s AND playlist_id = %s")
-        cursor.execute(q, (username, playlist_id))
+            "SELECT Tracks_tbl.track_id, track_name, album_name, artist_name FROM Tracks_tbl JOIN Artists_tbl ON Tracks_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id JOIN Playlists_tbl ON PlaylistToTracks_tbl.playlist_id = Playlists_tbl.playlist_id AND Playlists_tbl.playlist_id = %s")
+        cursor.execute(q, (playlist_id, ))
         results = [
             {'track_id': track_id, 'track_name': track_name, 'album_name': album_name, 'artist_name': artist_name} for
             track_id, track_name, album_name, artist_name in cursor]
