@@ -98,6 +98,7 @@ def add_user(username, password):
         cnx, cursor = open_db_connection()
         q = ("INSERT INTO Users_tbl(user_name, password_hash) VALUES (%s, %s)")
         cursor.execute(q, (username, password))
+        cnx.commit()
         # close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
@@ -113,6 +114,7 @@ def update_user_history(username, danceability, energy, playlist_name, tag=None)
         q = (
             "INSERT INTO Playlists_tbl(user_id, playlist_name) SELECT user_id as cur_user_id, %s FROM Users_tbl WHERE user_name = %s")
         cursor.execute(q, (playlist_name, username))
+        cnx.commit()
 
         if tag is not None:
             q = (
@@ -134,6 +136,7 @@ def update_user_history(username, danceability, energy, playlist_name, tag=None)
             q = q + ", (last_insert_id(), %s)"
             args = args + (results[i][0])
         cursor.execute(q, args)
+        cnx.commit()
         # close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
@@ -148,7 +151,7 @@ def search(sq):
         q = (
         "SELECT * FROM ArtistsAsText_tbl WHERE MATCH(artist_name) AGAINST(%s IN NATURAL LANGUAGE MODE) LIMIT 20")
         cursor.execute(q, (sq,))
-        results = [artist_name for artist_name in cursor]
+        results = [{'id': artist_id, 'name': artist_name} for artist_id, artist_name in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
@@ -165,6 +168,7 @@ def update_playlist(username, track_id):
         q = (
         "INSERT INTO PlaylistToTracks_tbl(playlist_id, track_id) SELECT playlist_id, %s FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s AND playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl AS pt2 JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s)")
         cursor.execute(q, (track_id, username, username))
+        cnx.commit()
         # close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
