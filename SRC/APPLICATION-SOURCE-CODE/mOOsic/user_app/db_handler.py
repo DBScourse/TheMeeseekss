@@ -29,7 +29,7 @@ def get_password(username):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT password_hash FROM Users_tbl WHERE user_name = %s")
+            "SELECT password_hash FROM Users_tbl WHERE user_name = %s")
         cursor.execute(q, (username,))
         results = [password_hash for password_hash in cursor]
         # close_db_connection(cnx, cursor)
@@ -46,7 +46,7 @@ def get_user_data(username):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT playlist_name, playlist_id FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s ORDER BY playlist_timestamp")
+            "SELECT playlist_name, playlist_id FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s ORDER BY playlist_timestamp")
         cursor.execute(q, (username,))
         results = [{'name': playlist_name, 'id': playlist_id} for playlist_name, playlist_id in cursor]
         # close_db_connection(cnx, cursor)
@@ -63,9 +63,11 @@ def get_tracks_by_playlist_id(username, playlist_id):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT Tracks_tbl.track_id, track_name, album_name, artist_name FROM Tracks_tbl JOIN Artists_tbl ON Tracks_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id JOIN Playlists_tbl ON PlaylistToTracks_tbl.playlist_id = Playlists_tbl.playlist_id JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s AND playlist_id = %s")
+            "SELECT Tracks_tbl.track_id, track_name, album_name, artist_name FROM Tracks_tbl JOIN Artists_tbl ON Tracks_tbl.artist_id = Artists_tbl.artist_id JOIN PlaylistToTracks_tbl ON Tracks_tbl.track_id = PlaylistToTracks_tbl.track_id JOIN Playlists_tbl ON PlaylistToTracks_tbl.playlist_id = Playlists_tbl.playlist_id JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s AND playlist_id = %s")
         cursor.execute(q, (username, playlist_id))
-        results = [{'track_id': track_id, 'track_name': track_name, 'album_name': album_name, 'artist_name': artist_name} for track_id, track_name, album_name, artist_name in cursor]
+        results = [
+            {'track_id': track_id, 'track_name': track_name, 'album_name': album_name, 'artist_name': artist_name} for
+            track_id, track_name, album_name, artist_name in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
@@ -80,7 +82,7 @@ def is_user(username):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT user_id FROM Users_tbl WHERE user_name = %s")
+            "SELECT user_id FROM Users_tbl WHERE user_name = %s")
         cursor.execute(q, (username,))
         results = [user_id for user_id in cursor]
         # close_db_connection(cnx, cursor)
@@ -149,7 +151,7 @@ def search(sq):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT * FROM ArtistsAsText_tbl WHERE MATCH(artist_name) AGAINST(%s IN NATURAL LANGUAGE MODE) LIMIT 20")
+            "SELECT * FROM ArtistsAsText_tbl WHERE MATCH(artist_name) AGAINST(%s IN NATURAL LANGUAGE MODE) LIMIT 20")
         cursor.execute(q, (sq,))
         results = [{'id': artist_id, 'name': artist_name} for artist_id, artist_name in cursor]
         # close_db_connection(cnx, cursor)
@@ -166,7 +168,7 @@ def update_playlist(username, track_id):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "INSERT INTO PlaylistToTracks_tbl(playlist_id, track_id) SELECT playlist_id, %s FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s AND playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl AS pt2 JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s)")
+            "INSERT INTO PlaylistToTracks_tbl(playlist_id, track_id) SELECT playlist_id, %s FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s AND playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl AS pt2 JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s)")
         cursor.execute(q, (track_id, username, username))
         cnx.commit()
         # close_db_connection(cnx, cursor)
@@ -181,7 +183,7 @@ def get_lyrics_by_track_id(track_id):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT lyrics FROM Tracks_tbl WHERE track_id = %s")
+            "SELECT lyrics FROM Tracks_tbl WHERE track_id = %s")
         cursor.execute(q, (track_id,))
         results = [lyrics for lyrics in cursor]
         # close_db_connection(cnx, cursor)
@@ -214,6 +216,7 @@ def get_top_artist_top_track():
     finally:
         close_db_connection(cnx, cursor)
 
+
 ###########################TODO#################################
 def get_artist_recommendation_from_last_playlist(username):
     return
@@ -241,7 +244,7 @@ def get_tag_recommendations(username):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT tag_name FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id JOIN Tags_tbl AS tt ON tt.tag_id = ttt.tag_id GROUP BY ttt.tag_id HAVING COUNT(ttt.tag_id) >= ALL (SELECT COUNT(tag_id) FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id GROUP BY tag_id) LIMIT 5")
+            "SELECT tag_name FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id JOIN Tags_tbl AS tt ON tt.tag_id = ttt.tag_id GROUP BY ttt.tag_id HAVING COUNT(ttt.tag_id) >= ALL (SELECT COUNT(tag_id) FROM TracksToTags_tbl AS ttt JOIN PlaylistToTracks_tbl AS ptt ON ttt.track_id = ptt.track_id JOIN (SELECT playlist_id FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s) AS ptu ON ptt.playlist_id = ptu.playlist_id GROUP BY tag_id) LIMIT 5")
         cursor.execute(q, (username, username))
         results = [tag_name for tag_name in cursor]
         # close_db_connection(cnx, cursor)
@@ -258,9 +261,11 @@ def get_tracks_by_artist(name):
     try:
         cnx, cursor = open_db_connection()
         q = (
-        "SELECT tb.track_id, track_name, album_name, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE artist_name = %s LIMIT 20")
+            "SELECT tb.track_id, track_name, album_name, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE artist_name = %s LIMIT 20")
         cursor.execute(q, (name,))
-        results = [artist_name for artist_name in cursor]
+        results = [
+            {'name': track_name, 'id': track_id, 'album': album_name, 'artist': {'name': artist_name, 'id': artist_id}}
+            for track_id, track_name, album_name, artist_name, artist_id in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
