@@ -52,33 +52,34 @@ export default class Server {
             .then(res => res.json());
     }
     
-    createNewPlaylist(name, danceability, energy, tags) {
+    createNewPlaylist(this.username, name, danceability, energy, tags) {
         return fetch(this.server + '/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({
+                username: this.username,
                 playlist_name: name,
-                danceability_value: danceability,
-                energy_value: energy,
+                danceability: danceability,
+                energy: energy,
                 tags: tags
             })
         }).then(res => res.json())
         .then(res => {
-            if (res.status == 200) {
-                return res.response.data
-            }
-        })
+            if (res.status != 200) {
+                return Promise.reject(new Error(res.response.status_message))
+        }).then (res => ({
+                id: id, name: playlistname, tracks: [res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))]}))
     }
-    
+    track_id, track_name, album_name, artist_name
     
     
     search(artistName) {
         return fetch(this.server + '/api/free_search?search_query=' + artistName)
             .then(res => res.json())
             .then(res => {
-                if (res.status_message == 'Data pulled successfully') {
+                if (res.status == 200) {
                     return res.search_result
                 } else {
-                    return Promise.reject(new Error(res.status_message))
+                    return Promise.reject(new Error(res.response.status_message))
                 }
             })
     }
@@ -86,6 +87,7 @@ export default class Server {
     getArtistSongs(artistId) {
         return fetch(this.server + '/api/get_artist_song?id=' + artistId)
             .then(res => res.json())
+            
     }
     
     login(name, password) {
@@ -97,7 +99,7 @@ export default class Server {
             })
         }).then(res => res.json())
         .then(res => {
-                if (res.response.is_valid == true) {
+                if (res.status == 200) {
                     return
                 } else {
                     return Promise.reject(new Error(res.response.status_message))
@@ -114,11 +116,12 @@ export default class Server {
             })
         }).then(res => res.json())
           .then(res => {
-            if (res.statuse == 200){
+            if (res.status == 200){
                 return
             } else {
                 return Promise.reject(new Error(res.response.status_message))
             }
         })
     }
+    
 }
