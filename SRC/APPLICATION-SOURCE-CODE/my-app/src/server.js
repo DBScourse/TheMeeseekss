@@ -52,7 +52,7 @@ export default class Server {
             .then(res => res.json());
     }
     
-    createNewPlaylist(this.state.username, name, danceability, energy, tags) {
+    createNewPlaylist(name, danceability, energy, tags) {
         return fetch(this.server + '/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({
@@ -66,9 +66,8 @@ export default class Server {
         .then(res => {
             if (res.status != 200) {
                 return Promise.reject(new Error(res.response.status_message))
-        }).then (res => ({
-                id: id, name: playlistname, tracks: [res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))]}))
-    }
+        })
+        .then()
     track_id, track_name, album_name, artist_name
     
     
