@@ -1,0 +1,1 @@
+SELECT user_id FROM Users_tbl WHERE user_name = %s

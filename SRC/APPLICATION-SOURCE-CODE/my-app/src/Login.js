@@ -1,16 +1,30 @@
 import React, { Component } from "react";
-import { Button, FormGroup, FormControl, ControlLabel, Nav, Navbar, NavItem, Modal } from "react-bootstrap";
+import { Button, FormGroup, FormControl, ControlLabel, Nav, Navbar, NavItem, Modal, HelpBlock} from "react-bootstrap";
 import RegistrationModal from "./RegistrationModal"
+import Server from "./server.js";
+import ServerMock from "./serverMock.js";
+
 import "./Login.css";
+
+
+var useMock = true;
+
 
 export default class Login extends Component {
     constructor(props) {
         super(props);
 
+        if (useMock) {
+            this.server = new ServerMock(this.props.user);
+        } else {
+            this.server = new Server(this.props.user);
+        }
+
         this.state = {
             username: "",
             password: "",
-            showModal: false
+            showModal: false,
+            error: null,
         };
     }
 
@@ -24,7 +38,16 @@ export default class Login extends Component {
 
     handleSubmit(event) {
         event.preventDefault()
-        this.props.onLoggedIn({username: this.state.username});
+        // this.props.onLoggedIn({username: this.state.username});
+        this.server.login(this.state.username, this.state.password)
+            .then(() =>
+                this.props.onLoggedIn({
+                    username: this.state.username
+                })
+            ).catch((err) =>
+                this.setState({
+                    error: err.message,
+                }));
     }
 
     showRegistrationModal() {
@@ -36,12 +59,17 @@ export default class Login extends Component {
     }
     
     handleRegistration(user){
-        console.log(this.state);
-        this.props.onLoggedIn({username: user.username});
+        this.server.register(user.username, user.password)
+            .then(() =>
+                this.props.onLoggedIn({
+                    username: user.username})
+            ).catch((err) =>
+                this.setState({
+                    error: err.message
+                }));
     }
     
     render() {
-        console.log(this.state);
         return (
             <div>
                 <div>
@@ -77,7 +105,9 @@ export default class Login extends Component {
                               onChange={(event) => this.handleChange(event)}
                               type="password"
                             />
+                            { (this.state.error != null) ? <HelpBlock>{this.state.error}</HelpBlock> : null }
                         </FormGroup>
+                        
                         <Button
                             block
                             bsSize="large"

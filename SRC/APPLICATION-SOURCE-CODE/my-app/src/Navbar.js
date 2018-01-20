@@ -6,7 +6,7 @@ export default class MoosicsNavbar extends Component {
     constructor (props, context) {
         super(props, context)
         this.state = {
-          freeSearchType: '',
+          freeSearchType: 'artist',
           freeSearchData: '',
         }
     }
@@ -24,7 +24,6 @@ export default class MoosicsNavbar extends Component {
         this.setState({freeSearchData: ""});
     }
     render() {
-        console.log(this.state);
         return (
             <div>
                 <Navbar>
@@ -48,8 +47,8 @@ export default class MoosicsNavbar extends Component {
                         <FormGroup>
                             <InputGroup>
                                 <InputGroup.Button>
-                                    <Button onClick={() => this.searchArtist()}>artist</Button>
-                                    <Button onClick={() => this.searchTrack()}>tracks</Button>
+                                    <Button>artist</Button>
+                      
                                 </InputGroup.Button>
                                 <FormControl type="text" onChange={(e) => this.freeSearchHandleChange(e.target.value)} value={this.state.freeSearchData}/>
                                 <InputGroup.Button>

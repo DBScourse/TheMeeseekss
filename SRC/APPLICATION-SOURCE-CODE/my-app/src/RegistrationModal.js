@@ -27,7 +27,6 @@ export default class RegistrationModal extends Component {
         this.props.handleRegistration({username: this.state.username, password: this.state.password});
     }
     
-    
     render() {
         return (
             <div>  

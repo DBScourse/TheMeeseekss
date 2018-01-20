@@ -21,16 +21,15 @@ class ArtistSearchResults extends Component {
 
 class TrackSearchResults extends Component {
     render() {
-        console.log(this.props);
         return (
             <ListGroup>
                 {this.props.data.map((track) =>
                             <ListGroupItem>
                                 {"track: " + (track.name) + " artist: " + (track.artist.name)}
-                                <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.props.addToPlaylist(track.id)}>
+                                <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.props.addToPlaylist(track)}>
                                     + 
                                 </Button>
-                                <Button bsStyle="info" bsSize="xsmall" onClick={() => this.props.changeLyrics(track.id)}>
+                                <Button bsStyle="info" bsSize="xsmall" onClick={() => this.props.changeLyrics(track)}>
                                     lyrics
                                 </Button>
                             </ListGroupItem>)
@@ -42,7 +41,6 @@ class TrackSearchResults extends Component {
 
 export default class SearchResults extends Component {
     render() {
-        console.log(this.props);
         if (this.props.type == 'track') {
             return <TrackSearchResults data={this.props.data} addToPlaylist={this.props.addToPlaylist} changeLyrics={this.props.changeLyrics} />
         } else if (this.props.type == 'artist') {
