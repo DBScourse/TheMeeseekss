@@ -4,6 +4,10 @@ import "./SearchResults.css";
 
 class ArtistSearchResults extends Component {
     render() {
+        console.log(this.props)
+        if (this.props.data.length == 0) {
+            return <div>no results</div>
+        }
         return (
             <ListGroup>
                 {this.props.data.map((artist) =>
@@ -21,14 +25,18 @@ class ArtistSearchResults extends Component {
 
 class TrackSearchResults extends Component {
     render() {
+        if (this.props.data.length == 0) {
+            return <div>no results</div>
+        }
         return (
             <ListGroup>
                 {this.props.data.map((track) =>
                             <ListGroupItem>
                                 {"track: " + (track.name) + " artist: " + (track.artist.name)}
+                                {(this.props.playlists != null)? (
                                 <Button bsStyle="primary" bsSize="xsmall" onClick={() => this.props.addToPlaylist(track)}>
-                                    + 
-                                </Button>
+                                  + 
+                                    </Button>):''}
                                 <Button bsStyle="info" bsSize="xsmall" onClick={() => this.props.changeLyrics(track)}>
                                     lyrics
                                 </Button>
@@ -42,7 +50,7 @@ class TrackSearchResults extends Component {
 export default class SearchResults extends Component {
     render() {
         if (this.props.type == 'track') {
-            return <TrackSearchResults data={this.props.data} addToPlaylist={this.props.addToPlaylist} changeLyrics={this.props.changeLyrics} />
+            return <TrackSearchResults data={this.props.data} addToPlaylist={this.props.addToPlaylist} changeLyrics={this.props.changeLyrics} playlists={this.props.playlists}/>
         } else if (this.props.type == 'artist') {
             return <ArtistSearchResults data={this.props.data} getArtistSongs={this.props.getArtistSongs}/>
         }

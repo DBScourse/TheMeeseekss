@@ -22,6 +22,10 @@ export default class MoosicsNavbar extends Component {
     searchTrack(){
         this.setState({freeSearchType: "track"})
     }
+    
+    searchNone(){
+        this.setState({freeSearchType: "none"})
+    }
 
     search(){
         this.props.search({type:this.state.freeSearchType, data:this.state.freeSearchData})

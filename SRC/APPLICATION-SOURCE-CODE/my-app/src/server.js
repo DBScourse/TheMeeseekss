@@ -106,6 +106,7 @@ export default class Server {
             })
         }).then((res) => res.json())
         .then(res => {
+            console.log(res)
             if (res.status_message != 'Playlist generated successfully') {
                 return Promise.reject(new Error(res.response.status_message))
             } else {
@@ -120,7 +121,9 @@ export default class Server {
             .then(res => {
                 if (res.status_message == 'Data pulled successfully') {
                     return res.data
-                } else {
+                } else if (res.status_message == 'Empty result set') {
+                    return []
+                }else {
                     return Promise.reject(new Error(res.status_message))
                 }
             })
@@ -132,6 +135,8 @@ export default class Server {
             .then (res => {
                 if (res.status_message == 'Playlist updated successfully') {
                     return res.data
+                } else if (res.status_message == 'Empty result set'){
+                    return []
                 } else {
                    return Promise.reject(new Error(res.status_message)) 
                 }

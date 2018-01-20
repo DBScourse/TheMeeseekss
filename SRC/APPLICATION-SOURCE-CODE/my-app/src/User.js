@@ -152,7 +152,6 @@ export default class User extends Component {
     }
     
     search(userInput) {
-        console.log(userInput)
         this.server.search(userInput)
             .then(res => this.setState({
                 currentResults: {
@@ -175,7 +174,8 @@ export default class User extends Component {
                         data={this.state.currentResults.data}
                         addToPlaylist={(track) => this.addToPlaylist(track)} 
                         changeLyrics={(track) => this.changeLyrics(track)}
-                        getArtistSongs={(artistId) => this.getArtistSongs(artistId)} />
+                        getArtistSongs={(artistId) => this.getArtistSongs(artistId)}
+                        playlists={this.state.playlists}/>
         } else if (this.state.currentLyrics != null) {
             return <Lyrics track={this.state.currentLyrics} />
         } else if (this.state.playlists == null) {
