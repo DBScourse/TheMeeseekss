@@ -25,7 +25,7 @@ JOIN
 			WHERE user_name = 'aaa'
 		)
 	) AS tracks_in_playlist
-    ON Tracks_tbl.track_id = tracks_in_playlist.track_id
+	ON Tracks_tbl.track_id = tracks_in_playlist.track_id
 	WHERE mood_id IS NOT NULL
 ) AS moods_in_pl
 ON tt.mood_id = moods_in_pl.mood_id
