@@ -10,18 +10,18 @@ import django.db
 # Create your views here.
 def generate_playlist(request):
     response = {}
-    if request.method != 'GET':
+    if request.method != 'POST':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
-    if not user_log.user_check(request.GET['username']):
+    if not user_log.user_check(request.body['username']):
         stat = 401
         response['status_message'] = 'User must be logged in'
         return JsonResponse(response, status=stat)
     try:
-        response['data'] = dbhandler.update_user_history(request.GET['username'], request.GET['danceability'],
-                                                         request.GET['energy'],
-                                                         request.GET['tags'], request.GET['playlist_name'])
+        response['data'] = dbhandler.update_user_history(request.body['username'], request.body['danceability'],
+                                                         request.body['energy'],
+                                                         request.body['tags'], request.body['playlist_name'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
