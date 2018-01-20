@@ -58,9 +58,7 @@ export default class User extends Component {
 
         this.server.getTops()
             .then(res => {
-                console.log(res)
                 this.setState({tops: res})
-                console.log(this.state)
             });
     }
 
@@ -111,7 +109,7 @@ export default class User extends Component {
 
     addToPlaylist(track) {
         var playlistId = this.state.currentPlaylist.id;
-        this.server.addToPlaylist(track.id, playlistId)
+        this.server.addToPlaylist(track.id)
             .then(() => {
                 if (this.state.currentPlaylist.id != playlistId) {
                     return;
@@ -169,6 +167,7 @@ export default class User extends Component {
     }
 
     renderMain() {
+        console.log(this.state)
         if (this.state.currentResults != null) {
             return <SearchResults
                         type={this.state.currentResults.type}
@@ -213,6 +212,8 @@ export default class User extends Component {
     }
 
     render() {
+        {console.log(this.state)}
+        {console.log(this.state.playlist)}
         return (
             <div>
                 <Navbar playlists={this.state.playlists} 

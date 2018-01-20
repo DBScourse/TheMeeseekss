@@ -18,7 +18,7 @@ export default class Server {
 
 
     getTagsRecommendations(playlistId) {
-        return fetch('/api/get_tags_recommendation?id=' + playlistId)
+        return fetch('/api/get_tags_recommendation?username=' + this.username.username)
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Playlist updated successfully') {
@@ -30,7 +30,7 @@ export default class Server {
     }
     
     getArtistRecommendation(playlistId) {
-        return fetch('/api/get_artist_recommendation?id=' + playlistId)
+        return fetch('/api/get_artist_recommendation?username=' + this.username.username)
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Playlist updated successfully') {
@@ -53,12 +53,12 @@ export default class Server {
             })
     }
     
-    addToPlaylist(trackId, playlistId) {
+    addToPlaylist(trackId) {
         return fetch('/api/add_song_to_playlist', {
             method: 'POST',
             body: JSON.stringify({
-                track_id: trackId,
-                playlist_id: playlistId
+                song_id: trackId,
+                username: this.username.username
             })
         }).then(res => res.json())
         .then(res => {
