@@ -250,7 +250,6 @@ def get_artist_recommendation_from_last_playlist(username):
     #     close_db_connection(cnx, cursor)
 
 
-
 def get_tag_recommendations(username):
     try:
         cnx, cursor = open_db_connection()
@@ -283,5 +282,3 @@ def get_tracks_by_artist(artist_id):
         raise django.db.Error('DB error occurred: {}'.format(err))
     finally:
         close_db_connection(cnx, cursor)
-
-
