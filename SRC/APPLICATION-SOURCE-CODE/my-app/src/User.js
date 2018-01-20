@@ -12,7 +12,7 @@ import ServerMock from "./serverMock.js";
 
 import "./User.css";
 
-var useMock = true;
+var useMock = false;
 
 
 
@@ -57,7 +57,11 @@ export default class User extends Component {
             });
 
         this.server.getTops()
-            .then(res => this.setState({tops: res}));
+            .then(res => {
+                console.log(res)
+                this.setState({tops: res})
+                console.log(this.state)
+            });
     }
 
     onChangePlaylist(playlist) {
@@ -220,6 +224,7 @@ export default class User extends Component {
                 <Grid>
                     <Row className="show-grid">
                         <Col xs={6} md={4}>
+                            console.log(this.state)
                             <Tops tops={this.state.tops} />
                             {this.renderRecommendations()}
                         </Col>

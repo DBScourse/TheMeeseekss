@@ -12,10 +12,6 @@ export default class Server {
                 id: id, name: playlistname, tracks: res.map((track) => ({id: track.track_id, name: track.track_name, artist: {name: track.artist_name}}))}));
     }
 
-    getTrackRecommendation(playlistId) {
-        return fetch('get_playlist_recommendation?playlist_id=' + playlistId)
-            .then(res => res.json());
-    }
 
     getTagsRecommendations(playlistId) {
         return fetch('/api/get_tags_recommendation?id=' + playlistId)
@@ -57,8 +53,8 @@ export default class Server {
             .then(res => res.json())
             .then(res =>
                 {if (res.status_message == 'Playlist updated successfully') {
-                    return {track: {name:res.top_track.track_name , id:res.top_track.track_id , artist: {name: res.top_track.artist_name, id: ''}}, 
-                        artist: {name:res.top_artist.name , id: ''}}
+                    console.log(res)
+                    return res.tops
                 } else {
                     return Promise.reject(new Error(res.response.status_message))
                 }});
@@ -78,16 +74,17 @@ export default class Server {
         .then(res => {
             if (res.status_message != 'Playlist generated successfully') {
                 return Promise.reject(new Error(res.response.status_message))
+            } else {
+                return res
             }
-            //ADI
-        })     
+        })
     }
     search(artistName) {
         return fetch('/api/free_search?search_query=' + artistName)
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Data pulled successfully') {
-                    return res.search_result
+                    return res
                 } else {
                     return Promise.reject(new Error(res.status_message))
                 }
@@ -97,6 +94,7 @@ export default class Server {
     getArtistSongs(artistId) {
         return fetch('/api/get_artist_song?id=' + artistId)
             .then(res => res.json())
+            
             
     }
     
