@@ -73,16 +73,16 @@ export default class User extends Component {
         this.setState({
             currentPlaylist: playlist,
         });
-
+        console.log(playlist)
         this.changeLyrics(playlist.tracks[0]);
 
-        this.server.getTrackRecommendation(playlist.id)
+        /*this.server.getTrackRecommendation(playlist.id)
             .then(res => this.setState({
                 recommendations: {
                     ...this.state.recommendations,
                     track: res
                 }
-            }));
+            }));*/
 
         this.server.getTagsRecommendations(playlist.id)
             .then(res => this.setState({
@@ -91,8 +91,8 @@ export default class User extends Component {
                     tags: res
                 }
             }));
-
-        this.server.getArtistRecommendation(playlist.id)
+        console.log(playlist)
+        this.server.getArtistRecommendation(playlist.playlistId)
             .then(res => this.setState({
                 recommendations: {
                     ...this.state.recommendations,
@@ -102,10 +102,11 @@ export default class User extends Component {
     }
     
     changeLyrics(track) {
+        console.log(track)
         this.setState({
             currentResults: null
         });
-        this.server.getLyrics(track.id)
+        this.server.getLyrics(track.track_id)
             .then(res => this.setState({currentLyrics: res}));
     }
 
@@ -210,7 +211,7 @@ export default class User extends Component {
             if (this.state.playlists.length == 0) {
                 return <div>No Playlist</div>
             } else {
-                return <Playlist playlist={this.state.currentPlaylist}
+                return <Playlist playlistName={this.state.playlists[0].name} playlist={this.state.currentPlaylist}
                                  changeLyrics={(track) => this.changeLyrics(track)}/>
             }
         } else {

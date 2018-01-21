@@ -40,6 +40,7 @@ export default class MoosicsNavbar extends Component {
         } else if (this.props.playlists.length == 0) {
             playlistsMenuItems = "No playlists yet";
         } else {
+            console.log(this.props)
             playlistsMenuItems = this.props.playlists.map((playlist) =>
                 <MenuItem onSelect={() => this.props.onChangePlaylist(playlist)}>{playlist.name}</MenuItem>)
         }

@@ -4,16 +4,18 @@ export default class Server {
         // this.server = (process.env.NODE_ENV == 'production') ? '' : 'http://localhost:8000';
     }
 
-    getPlaylist(id, playlistname) {
-        return fetch('/api/get_playlist?playlistId=' + id +'&username=' + this.username.username)
+    getPlaylist(id, playlistName) {
+        console.log()
+        return fetch('/api/get_playlist?playlist_id=' + id +'&username=' + this.username.username)
             .then(res => res.json())
             .then(res => {
-                if (res.status_message == 'Data pulled successfully') {
-                    return res.data
+                console.log(res)
+                if (res.status_message == 'Playlist updated successfully') {
+                    return {playlistId: id, playlistName:playlistName, tracks: res.data}
                 } else if (res.status_message == 'Empty result set') {
-                    return []
+                    return {}
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }
             })
     }
@@ -26,7 +28,7 @@ export default class Server {
                 if (res.status_message == 'Playlist updated successfully') {
                     return res.data
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }
             })
     }
@@ -37,8 +39,10 @@ export default class Server {
             .then(res => {
                 if (res.status_message == 'Playlist updated successfully') {
                     return res.data
+                } else if (res.status_message == 'Empty result set') {
+                    return []
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }
             })
     }
@@ -49,13 +53,16 @@ export default class Server {
             .then(res => {
                 if (res.status_message == 'Playlist updated successfully') {
                     return res.data
-                } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                } else if (res.status_message == 'Empty result set') {
+                    return []
+                }else {
+                    return Promise.reject(new Error(res.status_message))
                 }
             })
     }
     
     addToPlaylist(trackId) {
+        console.log(trackId)
         return fetch('/api/add_song_to_playlist', {
             method: 'POST',
             body: JSON.stringify({
@@ -67,7 +74,7 @@ export default class Server {
             if (res.status_message == 'Playlist updated successfully') {
                 return
             } else {
-                return Promise.reject(new Error(res.response.status_message))
+                return Promise.reject(new Error(res.status_message))
             }
         })
     }
@@ -82,7 +89,7 @@ export default class Server {
                 } else if (res.status_message == 'Empty result set') {
                     return []
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }
                 });
     }
@@ -95,7 +102,7 @@ export default class Server {
                     console.log(res)
                     return res.data
                 } else {
-                    return Promise.reject(new Error(res.response.status_message))
+                    return Promise.reject(new Error(res.status_message))
                 }});
     }
     
@@ -114,7 +121,7 @@ export default class Server {
         .then(res => {
             console.log(res)
             if (res.status_message != 'Playlist generated successfully') {
-                return Promise.reject(new Error(res.response.status_message))
+                return Promise.reject(new Error(res.status_message))
             } else {
                 return res.data
             }

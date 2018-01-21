@@ -38,7 +38,7 @@ export default class Login extends Component {
 
     handleSubmit(event) {
         event.preventDefault()
-        // this.props.onLoggedIn({username: this.state.username});
+        /*this.props.onLoggedIn({username: this.state.username});*/
         this.server.login(this.state.username, this.state.password)
             .then(() =>
                 this.props.onLoggedIn({

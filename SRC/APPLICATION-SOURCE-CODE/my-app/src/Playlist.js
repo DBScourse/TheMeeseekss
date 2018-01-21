@@ -10,10 +10,11 @@ export default class Playlist extends Component {
 
     return (
         <div>
-            playlist: {this.props.playlist.name}
+            playlist: {this.props.playlist.playlistName}
+            {console.log(this.props)}
             <ListGroup>{
                 this.props.playlist.tracks.map((track) =>
-                        <ListGroupItem onClick={() => this.props.changeLyrics(track)}>{"track: " + (track.name) + " artist: " + (track.artist.name)}</ListGroupItem>)
+                        <ListGroupItem onClick={() => this.props.changeLyrics(track)}>{"track: " + (track.track_name) + " artist: " + (track.artist_name)}</ListGroupItem>)
             }</ListGroup>
         </div>
     );
