@@ -4,8 +4,11 @@ import mysql.connector
 
 
 def open_db_connection():
+    # cnx = mysql.connector.connect(user='DbMysql19', password='DbMysql19',
+    #                               host='127.0.0.1', port='3305',
+    #                               database='DbMysql19')
     cnx = mysql.connector.connect(user='DbMysql19', password='DbMysql19',
-                                  host='127.0.0.1', port='3305',
+                                  host='mysqlsrv.cs.tau.ac.il',
                                   database='DbMysql19')
     cursor = cnx.cursor()
     return cnx, cursor
