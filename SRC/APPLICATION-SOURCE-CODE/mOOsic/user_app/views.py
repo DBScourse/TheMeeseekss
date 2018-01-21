@@ -153,12 +153,12 @@ def get_user_playlists(request):
 
 def add_song_to_playlist(request):
     response = {}
-    if request.method != 'GET':
+    if request.method != 'POST':
         stat = 400
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        dbhandler.update_playlist(request.GET['username'], request.GET['song_id'])
+        dbhandler.update_playlist(request.body['username'], request.body['song_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
