@@ -158,7 +158,8 @@ def add_song_to_playlist(request):
         response['status_message'] = 'Illegal request. Please try again'
         return JsonResponse(response, status=stat)
     try:
-        dbhandler.update_playlist(request.body['username'], request.body['song_id'])
+        body = json.loads(request.body)
+        dbhandler.update_playlist(body['username'], body['song_id'])
         stat = 200
         response['status_message'] = 'Playlist updated successfully'
     except django.core.exceptions.EmptyResultSet:
