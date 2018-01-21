@@ -63,15 +63,15 @@ export default class CreatePlaylistModal extends Component {
                         <span>&times;</span>
                     </button>
                 
-                    <h2 class="modal-title">find new playlist</h2>
-                    <h4 class="playlist name">choose a name for your playlist</h4>
+                    <h2 class="modal-title">Find new playlist</h2>
+                    <h4 class="playlist name">Choose a name for your playlist</h4>
                     <FormGroup>
                         <InputGroup>
                             <FormControl type="text" onChange={(e) => this.nameHandleChange(e.target.value)} value={this.state.name} />
                         </InputGroup>
                     </FormGroup>
                         
-                    <h4 class="danceability">choose danceability value for your playlist</h4>
+                    <h4 class="danceability">Choose danceability value for your playlist</h4>
                     <div className='slider'>
                         <Slider 
                             min={0}
@@ -82,7 +82,7 @@ export default class CreatePlaylistModal extends Component {
                         <div className='value'>{this.state.danceabilityValue}</div>
                     </div>
                     
-                    <h4 class="energy">choose energy value for your playlist</h4>
+                    <h4 class="energy">Choose energy value for your playlist</h4>
                     <div className='slider'>
                         <Slider 
                             min={0}
@@ -95,7 +95,7 @@ export default class CreatePlaylistModal extends Component {
                     
                     
                     <div className="Tags">
-                        <h4>what tag you want to search:</h4>
+                        <h4>What tag you want to search:</h4>
                         <FormGroup>
                             <InputGroup>
                                 <FormControl type="text" onChange={(e) => this.tagsHandleChange(e.target.value)} value={this.state.tags} />
@@ -104,7 +104,7 @@ export default class CreatePlaylistModal extends Component {
                     </div>
                     
                     <br/>
-                    <Button bsStyle="primary" disabled={!this.validateForm()} onClick={() => this.submit()}>find playlist</Button>
+                    <Button bsStyle="primary" disabled={!this.validateForm()} onClick={() => this.submit()}>Find Playlist</Button>
                 </Modal>
             </div>
         );

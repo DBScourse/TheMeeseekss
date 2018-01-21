@@ -7,7 +7,7 @@ export default class Recommendations extends Component {
       if (this.props.recommendations.tags == null) {
           return <div>Loading...</div>
       } else {
-          return <div>you may also like songs with those tags: {this.props.recommendations.tags}</div>
+          return <div><b>You may also like songs with those tags:</b> {this.props.recommendations.tags}</div>
       }
   }
 
@@ -15,7 +15,7 @@ export default class Recommendations extends Component {
       if (this.props.recommendations.artist == null) {
           return <div>Loading...</div>
       } else {
-          return <div>you may also like songs of: {this.props.recommendations.artist.name}</div>
+          return <div><b>You may also like songs of:</b> {this.props.recommendations.artist.name}</div>
       }
   }
   
@@ -30,8 +30,8 @@ export default class Recommendations extends Component {
   render() {
     return (
         <div>
-            {this.renderTagsRecommendation()}
-            {this.renderArtistRecommendation()}
+            <h4>{this.renderTagsRecommendation()}</h4>
+            <h4>{this.renderArtistRecommendation()}</h4>
         </div>
        );
   }    

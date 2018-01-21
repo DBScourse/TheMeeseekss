@@ -54,13 +54,13 @@ export default class MoosicsNavbar extends Component {
                         </Navbar.Brand>
                     </Navbar.Header>
                     <Nav>
-                        <NavDropdown eventKey={2} title="your playlists" id="basic-nav-dropdown">
+                        <NavDropdown eventKey={2} title="Your playlists" id="basic-nav-dropdown">
                             {playlistsMenuItems}
                         </NavDropdown>
                     </Nav>
                     <Nav pullLeft>
                         <NavItem eventKey={3} onClick={() => this.props.createPlaylistModal()}>
-                            create new playlist
+                            Create new playlist
                         </NavItem>
                     </Nav>
                     <Navbar.Form pullLeft>

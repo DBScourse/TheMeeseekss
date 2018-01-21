@@ -11,8 +11,8 @@ export default class Tops extends Component {
 
     return (
         <div>
-            <div>top artist is: {this.props.tops.artist.name}</div>
-            <div>top song: {this.props.tops.track.name}</div>
+            <div><h4><b>Top artist is:</b> {this.props.tops.artist.name}</h4></div>
+            <div><h4><b>Top song: </b>{this.props.tops.track.name}</h4></div>
         </div>
     );
   }    

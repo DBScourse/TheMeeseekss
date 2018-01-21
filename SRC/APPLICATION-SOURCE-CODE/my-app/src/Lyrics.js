@@ -10,7 +10,9 @@ export default class Lyrics extends Component {
     }
     return (
         <div>
-            song: {this.props.track.name}, artist: {this.props.track.artist.name}<br/>
+            <h3><b>{this.props.track.name}</b></h3>
+            <h4>{this.props.track.artist.name}</h4>
+            <br/>
             {this.props.track.lyrics.split('\n').map((line) => <div>{line}</div>)}
         </div>
     );

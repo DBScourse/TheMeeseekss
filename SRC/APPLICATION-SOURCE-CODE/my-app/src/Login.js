@@ -81,7 +81,7 @@ export default class Login extends Component {
                         </Navbar.Header>
                         <Nav pullRight>
                             <NavItem onClick={() => this.showRegistrationModal()}>
-                                register
+                                Register
                             </NavItem>
                         </Nav>
                     </Navbar>
@@ -90,7 +90,7 @@ export default class Login extends Component {
                 <div className="Login">                  
                     <form onSubmit={(event) => this.handleSubmit(event)}>
                         <FormGroup controlId="username" bsSize="large">
-                            <ControlLabel>username</ControlLabel>
+                            <ControlLabel>Username</ControlLabel>
                             <FormControl
                               autoFocus
                               type="username"
