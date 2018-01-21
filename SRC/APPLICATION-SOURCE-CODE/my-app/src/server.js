@@ -95,10 +95,11 @@ export default class Server {
     }
     
     createNewPlaylist(name, danceability, energy, tags) {
+        console.log(name, danceability, energy, tags)
         return fetch('/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({
-                username: this.username,
+                username: this.username.username,
                 playlist_name: name,
                 danceability: danceability,
                 energy: energy,
