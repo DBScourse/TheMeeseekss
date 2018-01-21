@@ -1,5 +1,4 @@
-SELECT tb.track_id, 
-	tb.mood_id,
+SELECT tb.track_id,
     track_name,
     album_name,
     tb.artist_id,
