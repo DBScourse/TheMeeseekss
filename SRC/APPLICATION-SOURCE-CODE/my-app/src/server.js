@@ -10,6 +10,8 @@ export default class Server {
             .then(res => {
                 if (res.status_message == 'Data pulled successfully') {
                     return res.data
+                } else if (res.status_message == 'Empty result set') {
+                    return []
                 } else {
                     return Promise.reject(new Error(res.response.status_message))
                 }
@@ -75,7 +77,10 @@ export default class Server {
             .then(res => res.json())
             .then(res => 
                 {if (res.status_message == 'Data pulled successfully') {
+                    console.log(res.data)
                     return res.data
+                } else if (res.status_message == 'Empty result set') {
+                    return []
                 } else {
                     return Promise.reject(new Error(res.response.status_message))
                 }
@@ -95,7 +100,7 @@ export default class Server {
     }
     
     createNewPlaylist(name, danceability, energy, tags) {
-        console.log(name, danceability, energy, tags)
+        console.log(this.username.username, name, danceability, energy, tags)
         return fetch('/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({

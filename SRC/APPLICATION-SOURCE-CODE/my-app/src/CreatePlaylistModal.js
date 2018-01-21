@@ -19,6 +19,10 @@ export default class CreatePlaylistModal extends Component {
         }
     }
     
+    validateForm() {
+        return this.state.name.length > 0;
+    }
+    
     nameHandleChange(value) {
         this.setState({name: value})
     }
@@ -80,8 +84,7 @@ export default class CreatePlaylistModal extends Component {
                     
                     
                     <div className="Tags">
-                        <h4>what tags you want to search:</h4>
-                        <h6>separated by comma</h6>
+                        <h4>what tag you want to search:</h4>
                         <FormGroup>
                             <InputGroup>
                                 <FormControl type="text" onChange={(e) => this.tagsHandleChange(e.target.value)} value={this.state.tags} />
@@ -90,7 +93,7 @@ export default class CreatePlaylistModal extends Component {
                     </div>
                     
                     <br/>
-                    <Button bsStyle="primary" onClick={() => {this.props.findNewPlaylist(this.state)}}>find playlist</Button>
+                    <Button bsStyle="primary" disabled={!this.validateForm()} onClick={() => {this.props.findNewPlaylist(this.state)}}>find playlist</Button>
                 </Modal>
             </div>
         );

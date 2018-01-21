@@ -33,6 +33,7 @@ export default class MoosicsNavbar extends Component {
     }
 
     render() {
+        {console.log(this.props)}
         var playlistsMenuItems;
         if (this.props.playlists == null) {
             playlistsMenuItems = "Loading...";

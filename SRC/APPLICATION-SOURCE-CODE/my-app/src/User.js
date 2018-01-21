@@ -63,11 +63,13 @@ export default class User extends Component {
     }
 
     onChangePlaylist(playlist) {
+        console.log(playlist)
         this.server.getPlaylist(playlist.id, playlist.name)
             .then(res => this.showPlaylist(res));
     }
 
     showPlaylist(playlist) {
+        console.log(playlist)
         this.setState({
             currentPlaylist: playlist,
         });
@@ -218,7 +220,6 @@ export default class User extends Component {
 
     render() {
         {console.log(this.state)}
-        {console.log(this.state.playlist)}
         return (
             <div>
                 <Navbar playlists={this.state.playlists} 
