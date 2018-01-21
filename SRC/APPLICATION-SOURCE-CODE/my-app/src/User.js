@@ -148,6 +148,7 @@ export default class User extends Component {
     createNewPlaylist(playlistPreferences) {
         console.log(this.state)
         console.log(playlistPreferences)
+        this.hideCreatePlaylistModal()
         this.setState({playlistPreferences: playlistPreferences})
         this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceabilityValue/1000.0, 
                                       playlistPreferences.energyValue/1000.0, playlistPreferences.tags)

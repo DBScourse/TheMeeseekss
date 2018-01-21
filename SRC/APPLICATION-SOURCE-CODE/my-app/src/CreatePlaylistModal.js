@@ -90,7 +90,7 @@ export default class CreatePlaylistModal extends Component {
                     </div>
                     
                     <br/>
-                    <Button bsStyle="primary" onClick={() => this.props.findNewPlaylist(this.state)}>find playlist</Button>
+                    <Button bsStyle="primary" onClick={() => {this.props.findNewPlaylist(this.state)}}>find playlist</Button>
                 </Modal>
             </div>
         );

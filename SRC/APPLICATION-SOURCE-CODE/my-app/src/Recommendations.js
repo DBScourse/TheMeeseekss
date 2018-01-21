@@ -32,7 +32,6 @@ export default class Recommendations extends Component {
         <div>
             {this.renderTagsRecommendation()}
             {this.renderArtistRecommendation()}
-            /*{this.renderTrackRecommendation()}*/
         </div>
        );
   }    

@@ -5,7 +5,7 @@ export default class Server {
     }
 
     getPlaylist(id, playlistname) {
-        return fetch('/api/get_playlist?playlistId=' + id +'&username=' + this.state.username)
+        return fetch('/api/get_playlist?playlistId=' + id +'&username=' + this.username.username)
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Data pulled successfully') {
