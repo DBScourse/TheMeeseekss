@@ -19,7 +19,7 @@ def generate_playlist(request):
         body = json.loads(request.body)
         response['data'] = dbhandler.create_playlist(body['username'], body['danceability'],
                                                      body['energy'],
-                                                     body['tags'], body['playlist_name'])
+                                                    body['playlist_name'], body['tags'])
         stat = 200
         response['status_message'] = 'Playlist generated successfully'
     except django.core.exceptions.EmptyResultSet:
