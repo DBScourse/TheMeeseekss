@@ -1,5 +1,6 @@
 import django.core.exceptions
 import django.db
+import django.db.models.sql
 import mysql.connector
 
 
@@ -28,7 +29,7 @@ def get_password(username):
         cursor.execute(q, (username,))
         results = [password_hash for password_hash in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return results[0][0]
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -60,7 +61,7 @@ def get_tracks_by_playlist_id(username, playlist_id):
             {'track_id': track_id, 'track_name': track_name, 'album_name': album_name, 'artist_name': artist_name} for
             track_id, track_name, album_name, artist_name in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -120,7 +121,7 @@ def create_playlist(username, danceability, energy, playlist_name, tag):
 
         results = [item for item in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         q = ("INSERT INTO PlaylistToTracks_tbl VALUES (%s, %s)")
         args = (plid, results[0][0])
         for i in range(1, len(results)):
@@ -144,7 +145,7 @@ def search(sq):
         cursor.execute(q, (sq,))
         results = [{'id': artist_id, 'name': artist_name} for artist_id, artist_name in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -175,13 +176,13 @@ def get_lyrics_by_track_id(track_id):
         cursor.execute(q, (track_id,))
         lyr = [lyrics for lyrics in cursor]
         if not lyr:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         q = (
             "SELECT track_id, track_name, Tracks_tbl.artist_id, artist_name FROM Tracks_tbl, Artists_tbl WHERE track_id = %s AND Tracks_tbl.artist_id = Artists_tbl.artist_id")
         cursor.execute(q, (track_id,))
         tr = [item for item in cursor]
         if not tr:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         lyr = lyr[0]
         tr = tr[0]
         return {'name': tr[1], 'id': tr[0], 'lyrics': lyr[0], 'artist': {'name': tr[3], 'id': tr[2]}}
@@ -221,7 +222,7 @@ def get_artist_recommendation_from_last_playlist(username):
         cursor.execute(q, (username, username, username, username))
         results = [item for item in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return {'name': results[0][1], 'id': results[0][0]}
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -237,7 +238,7 @@ def get_tag_recommendations(username):
         cursor.execute(q, (username, username))
         results = [item for item in cursor]
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return [item[1] for item in results]
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -254,7 +255,7 @@ def get_tracks_by_artist(artist_id):
         results = [item for item in cursor]
         # close_db_connection(cnx, cursor)
         if not results:
-            raise django.core.exceptions.EmptyResultSet('Empty result set')
+            raise django.db.models.sql.EmptyResultSet('Empty result set')
         return [{'name': item[1], 'id': item[0], 'album': item[2], 'artist': {'name': item[4], 'id': item[3]}} for item
                 in results]
     except mysql.connector.Error as err:
