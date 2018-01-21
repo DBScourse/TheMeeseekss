@@ -63,17 +63,14 @@ export default class User extends Component {
     }
 
     onChangePlaylist(playlist) {
-        console.log(playlist)
         this.server.getPlaylist(playlist.id, playlist.name)
             .then(res => this.showPlaylist(res));
     }
 
     showPlaylist(playlist) {
-        console.log(playlist)
         this.setState({
             currentPlaylist: playlist,
         });
-        console.log(playlist)
         this.changeLyrics(playlist.tracks[0]);
 
         /*this.server.getTrackRecommendation(playlist.id)
@@ -91,7 +88,6 @@ export default class User extends Component {
                     tags: res
                 }
             }));
-        console.log(playlist)
         this.server.getArtistRecommendation(playlist.playlistId)
             .then(res => this.setState({
                 recommendations: {
@@ -102,11 +98,11 @@ export default class User extends Component {
     }
     
     changeLyrics(track) {
-        console.log(track)
         this.setState({
             currentResults: null
         });
-        this.server.getLyrics(track.track_id)
+        console.log(track)
+        this.server.getLyrics(track.id)
             .then(res => this.setState({currentLyrics: res}));
     }
 
@@ -149,8 +145,6 @@ export default class User extends Component {
     
     
     createNewPlaylist(playlistPreferences) {
-        console.log(this.state)
-        console.log(playlistPreferences)
         this.hideCreatePlaylistModal()
         this.setState({playlistPreferences: playlistPreferences})
         this.server.createNewPlaylist(playlistPreferences.name, playlistPreferences.danceabilityValue/1000.0, 
@@ -174,7 +168,6 @@ export default class User extends Component {
     }
 
     renderMain() {
-        console.log(this.state)
         if (this.state.currentResults != null) {
             return <SearchResults
                         type={this.state.currentResults.type}
@@ -220,7 +213,6 @@ export default class User extends Component {
     }
 
     render() {
-        {console.log(this.state)}
         return (
             <div>
                 <Navbar playlists={this.state.playlists} 

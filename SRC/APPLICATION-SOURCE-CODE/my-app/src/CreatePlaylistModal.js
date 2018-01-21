@@ -43,6 +43,17 @@ export default class CreatePlaylistModal extends Component {
         this.setState({tags: value})
     }
     
+    submit() {
+        this.props.findNewPlaylist(this.state);
+        this.setState({
+          name: '',
+          danceabilityValue: 10,
+          energyValue: 10,
+          freeSearchType: '',
+          freeSearchData: '',
+          tags: ''
+        })
+    }
     
     render() {
         return (
@@ -93,7 +104,7 @@ export default class CreatePlaylistModal extends Component {
                     </div>
                     
                     <br/>
-                    <Button bsStyle="primary" disabled={!this.validateForm()} onClick={() => {this.props.findNewPlaylist(this.state)}}>find playlist</Button>
+                    <Button bsStyle="primary" disabled={!this.validateForm()} onClick={() => this.submit()}>find playlist</Button>
                 </Modal>
             </div>
         );

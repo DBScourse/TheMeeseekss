@@ -11,7 +11,19 @@ export default class Server {
             .then(res => {
                 console.log(res)
                 if (res.status_message == 'Playlist updated successfully') {
-                    return {playlistId: id, playlistName:playlistName, tracks: res.data}
+                    return {
+                        id: id,
+                        name:playlistName,
+                        tracks: res.data.map(
+                            (track) => ({
+                                name: track.track_name,
+                                id: track.track_id,
+                                artist: {
+                                    name: track.artist_name
+                                }
+                            })
+                        )
+                    }
                 } else if (res.status_message == 'Empty result set') {
                     return {}
                 } else {
@@ -48,10 +60,12 @@ export default class Server {
     }
     
     getLyrics(trackId) {
+        console.log(trackId)
         return fetch('/api/get_lyrics?lyrics_id=' + trackId)
             .then(res => res.json())
             .then(res => {
                 if (res.status_message == 'Playlist updated successfully') {
+                    console.log(res.data)
                     return res.data
                 } else if (res.status_message == 'Empty result set') {
                     return []
@@ -62,7 +76,6 @@ export default class Server {
     }
     
     addToPlaylist(trackId) {
-        console.log(trackId)
         return fetch('/api/add_song_to_playlist', {
             method: 'POST',
             body: JSON.stringify({
@@ -84,7 +97,6 @@ export default class Server {
             .then(res => res.json())
             .then(res => 
                 {if (res.status_message == 'Data pulled successfully') {
-                    console.log(res.data)
                     return res.data
                 } else if (res.status_message == 'Empty result set') {
                     return []
@@ -99,7 +111,6 @@ export default class Server {
             .then(res => res.json())
             .then(res =>
                 {if (res.status_message == 'Playlist updated successfully') {
-                    console.log(res)
                     return res.data
                 } else {
                     return Promise.reject(new Error(res.status_message))
@@ -107,7 +118,6 @@ export default class Server {
     }
     
     createNewPlaylist(name, danceability, energy, tags) {
-        console.log(this.username.username, name, danceability, energy, tags)
         return fetch('/api/create_new_playlist', {
             method: 'POST',
             body: JSON.stringify({
@@ -119,16 +129,15 @@ export default class Server {
             })
         }).then((res) => res.json())
         .then(res => {
-            console.log(res)
             if (res.status_message != 'Playlist generated successfully') {
                 return Promise.reject(new Error(res.status_message))
             } else {
+                console.log(res.data)
                 return res.data
             }
         })
     }
     search(artistName) {
-        console.log(artistName)
         return fetch('/api/free_search?search_query=' + artistName)
             .then(res => res.json())
             .then(res => {
