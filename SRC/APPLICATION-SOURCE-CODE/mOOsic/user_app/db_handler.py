@@ -48,7 +48,7 @@ def get_user_data(username):
         q = (
             "SELECT playlist_id, playlist_name FROM Playlists_tbl AS pt JOIN Users_tbl AS ut ON pt.user_id = ut.user_id WHERE user_name = %s")
         cursor.execute(q, (username,))
-        results = [{'name': playlist_name, 'id': playlist_id} for playlist_name, playlist_id in cursor]
+        results = [{'name': item[1], 'id': item[0]} for item in cursor]
         return results
     except mysql.connector.Error as err:
         raise django.db.Error('DB error occurred: {}'.format(err))
@@ -98,7 +98,6 @@ def add_user(username, password):
         q = ("INSERT INTO Users_tbl(user_name, password_hash) VALUES (%s, %s)")
         cursor.execute(q, (username, password))
         cnx.commit()
-        # close_db_connection(cnx, cursor)
         return
     except mysql.connector.Error as err:
         print err
@@ -116,26 +115,25 @@ def create_playlist(username, danceability, energy, playlist_name, tag=None):
         cnx.commit()
         q = ("SELECT last_insert_id()")
         cursor.execute(q)
-        plid = cursor[0]  # TODO check this shit
-
-        if tag is not None:
+        plid = [item for item in cursor]
+        plid = plid[0][0]
+        if not tag == '':
             q = (
                 "SELECT tb.track_id, track_name, album_name, tb.artist_id, artist_name FROM Tracks_tbl AS tb JOIN TracksToTags_tbl AS ttb ON tb.track_id = ttb.track_id JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE tag_id = (SELECT tag_id FROM Tags_tbl WHERE tag_name = %s) AND mood_id = (SELECT mood_id FROM Moods_tbl WHERE ABS(danceability - %s) < 0.01 AND ABS(energy - %s) < 0.01 LIMIT 1) LIMIT 20")
             cursor.execute(q, (tag, danceability, energy))
         else:
             q = (
-                "SELECT tb.track_id, track_name, album_name, tb.artist_id, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE mood_id = (SELECT mood_id FROM Moods_tbl WHERE ABS(danceability - %s) < 0.01 AND ABS(energy - %s) < 0.01 LIMIT 1) LIMIT 20")
-            cursor.execute(q, (danceability, energy))
+                "SELECT tb.track_id, track_name, album_name, tb.artist_id, artist_name FROM Tracks_tbl AS tb JOIN Artists_tbl ON tb.artist_id = Artists_tbl.artist_id WHERE mood_id IN (SELECT mood_id FROM Moods_tbl WHERE ABS(danceability - %s) < 0.1 AND ABS(energy - %s) < 0.1 order by ABS(danceability - %s) + ABS(energy - %s) ASC) LIMIT 20")
+            cursor.execute(q, (danceability, energy, danceability, energy))
 
-        results = [(track_id, track_name, album_name, artist_id, artist_name) for
-                   track_id, track_name, album_name, artist_id, artist_name in
-                   cursor]
+        results = [item for item in cursor]
+        # TODO handle empty results
         if not results:
             # close_db_connection(cnx, cursor)
             raise django.core.exceptions.EmptyResultSet('Empty result set')
         q = ("INSERT INTO PlaylistToTracks_tbl VALUES (%s, %s)")
-        args = ((plid, results[0][0]),)
-        for i in range(len(results) - 1):
+        args = (plid, results[0][0])
+        for i in range(1, len(results)):
             q = q + ", (%s, %s)"
             args = args + (plid, results[i][0])
         cursor.execute(q, args)
@@ -143,9 +141,8 @@ def create_playlist(username, danceability, energy, playlist_name, tag=None):
         tracks = [{'id': item[0], 'name': item[1], 'artist': {'name': item[4], 'id': item[3]}} for item in results]
         return {'id': plid, 'name': playlist_name, 'tracks': tracks}
     except mysql.connector.Error as err:
+        print err
         raise django.db.Error('DB error occurred: {}'.format(err))
-    finally:
-        close_db_connection(cnx, cursor)
 
 
 def search(sq):
@@ -228,7 +225,8 @@ def get_top_artist_top_track():
 def get_artist_recommendation_from_last_playlist(username):
     try:
         cnx, cursor = open_db_connection()
-        q = ("SELECT art.artist_id, artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt2.track_id FROM PlaylistToTracks_tbl AS ptt2 JOIN Playlists_tbl AS pt2 ON ptt2.playlist_id = pt2.playlist_id JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s AND pt2.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl ON tt.mood_id = moods_in_pl.mood_id GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt3 JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt4.track_id FROM PlaylistToTracks_tbl AS ptt4 JOIN Playlists_tbl AS pt4 ON ptt4.playlist_id = pt4.playlist_id JOIN Users_tbl AS ut4 ON pt4.user_id = ut4.user_id WHERE user_name = %s AND pt4.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl2 ON tt3.mood_id = moods_in_pl2.mood_id GROUP BY artist_id) LIMIT 1")
+        q = (
+        "SELECT art.artist_id, artist_name FROM Artists_tbl AS art JOIN Tracks_tbl AS tt ON art.artist_id = tt.artist_id JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt2.track_id FROM PlaylistToTracks_tbl AS ptt2 JOIN Playlists_tbl AS pt2 ON ptt2.playlist_id = pt2.playlist_id JOIN Users_tbl AS ut2 ON pt2.user_id = ut2.user_id WHERE user_name = %s AND pt2.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl ON tt.mood_id = moods_in_pl.mood_id GROUP BY art.artist_id HAVING COUNT(art.artist_id) >= ALL (SELECT COUNT(artist_id) FROM Tracks_tbl AS tt3 JOIN (SELECT DISTINCT mood_id FROM Tracks_tbl JOIN (SELECT ptt4.track_id FROM PlaylistToTracks_tbl AS ptt4 JOIN Playlists_tbl AS pt4 ON ptt4.playlist_id = pt4.playlist_id JOIN Users_tbl AS ut4 ON pt4.user_id = ut4.user_id WHERE user_name = %s AND pt4.playlist_timestamp = (SELECT MAX(playlist_timestamp) FROM Playlists_tbl JOIN Users_tbl ON Playlists_tbl.user_id = Users_tbl.user_id WHERE user_name = %s)) AS tracks_in_playlist ON Tracks_tbl.track_id = tracks_in_playlist.track_id WHERE mood_id IS NOT NULL) AS moods_in_pl2 ON tt3.mood_id = moods_in_pl2.mood_id GROUP BY artist_id) LIMIT 1")
         results = [item for item in cursor]
         if not results:
             raise django.core.exceptions.EmptyResultSet('Empty result set')
