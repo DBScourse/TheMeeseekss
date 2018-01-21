@@ -25,9 +25,9 @@ def generate_playlist(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -54,9 +54,9 @@ def login(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Unknown Username'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
 
     return JsonResponse(response, status=stat)
 
@@ -79,9 +79,9 @@ def logout(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -107,9 +107,9 @@ def register(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -126,9 +126,9 @@ def free_search(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -145,9 +145,9 @@ def get_user_playlists(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -164,9 +164,9 @@ def add_song_to_playlist(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -183,9 +183,9 @@ def get_user_playlist_by_id(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -202,9 +202,9 @@ def get_lyrics_by_track_id(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -221,9 +221,9 @@ def get_artist_recommendation_from_last_playlist(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -240,9 +240,9 @@ def get_top_artist_and_track(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -259,9 +259,9 @@ def get_tag_recommendations(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
 
 
@@ -278,7 +278,7 @@ def artist_songs(request):
     except django.core.exceptions.EmptyResultSet:
         stat = 404
         response['status_message'] = 'Empty result set'
-    except django.db.Error:
+    except Exception as err:
         stat = 503
-        response['status_message'] = 'An error has occurred while performing the task'
+        response['status_message'] = 'An error has occurred while performing the task: {}'.format(str(err))
     return JsonResponse(response, status=stat)
