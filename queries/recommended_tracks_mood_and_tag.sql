@@ -13,8 +13,8 @@ JOIN TracksToTags_tbl AS ttt
 ON tb.track_id = ttt.track_id
 JOIN Tags_tbl
 ON ttt.tag_id = Tags_tbl.tag_id
-WHERE ABS(danceability - 0.118) < 0.1 AND ABS(energy - 0.221) < 0.1
-AND tag_name = 'rock'
+WHERE ABS(danceability - {danceability}) < 0.1 AND ABS(energy - {energy}) < 0.1
+AND tag_name = {tag}
 GROUP BY track_name
-ORDER BY ABS(danceability - 0.118) + ABS(energy - 0.221) ASC
+ORDER BY ABS(danceability - {danceability}) + ABS(energy - {energy}) ASC
 LIMIT 20
